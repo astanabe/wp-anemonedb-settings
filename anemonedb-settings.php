@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:     ANEMONEDB Settings
+ * Plugin Name:     ANEMONE DB Settings
  * Plugin URI:      https://github.com/astanabe/anemonedb-settings
  * Description:     ANEMONE DB Settings Plugin for WordPress
  * Author:          Akifumi S. Tanabe
@@ -24,16 +24,16 @@ function anemonedb_settings_activate() {
 	anemonedb_check_required_plugins();
 	anemonedb_check_login_failure_log();
 	anemonedb_create_dd_users_table();
-	anemonedb_post_type_init();
-	anemonedb_taxonomies_init();
-	flush_rewrite_rules();
+	//anemonedb_post_type_init();
+	//anemonedb_taxonomies_init();
+	//flush_rewrite_rules();
 }
 register_activation_hook(__FILE__, 'anemonedb_settings_activate');
 
 // Deactivation hook
 function anemonedb_settings_deactivate() {
 	anemonedb_delete_dd_users_table();
-	flush_rewrite_rules();
+	//flush_rewrite_rules();
 }
 register_deactivation_hook(__FILE__, 'anemonedb_settings_deactivate');
 
@@ -45,7 +45,7 @@ function anemonedb_admin_notices_callback() {
 		}
 	}
 }
-add_action('admin_notices', 'anemonedb_admin_notice_callback');
+add_action('admin_notices', 'anemonedb_admin_notices_callback');
 
 // Function to add admin notices
 function anemonedb_add_admin_notices($message) {
@@ -189,6 +189,24 @@ function anemonedb_plain_text_email() {
 }
 add_filter( 'wp_mail_content_type', 'anemonedb_plain_text_email' );
 
+// Disable "Export Data" page
+function anemonedb_remove_export_data() {
+	return false;
+}
+add_filter( 'bp_settings_show_user_data_page', 'anemonedb_remove_export_data' );
+
+// Disable "Profile Visibility" page
+function anemonedb_remove_profile_visibility() {
+	bp_core_remove_subnav_item( 'settings', 'profile' );
+}
+add_action( 'bp_setup_nav', 'anemonedb_remove_profile_visibility', 999 );
+
+// Disable "Email" page
+function anemonedb_remove_notifications() {
+	bp_core_remove_subnav_item( 'settings', 'notifications' );
+}
+add_action( 'bp_setup_nav', 'anemonedb_remove_notifications', 999 );
+
 // Create table
 function anemonedb_create_dd_users_table() {
 	global $wpdb;
@@ -211,34 +229,25 @@ function anemonedb_delete_dd_users_table() {
 	$wpdb->query("DROP TABLE IF EXISTS $table_name");
 }
 
-// Generate and save data download password
-function anemonedb_save_dd_pass() {
-	if (!is_user_logged_in()) {
-		return;
-	}
-	global $wpdb;
-	$user_id = get_current_user_id();
-	$user_info = get_userdata($user_id);
-	$table_name = $wpdb->prefix . 'anemonedb_dd_users';
-	if (isset($_POST['generate_password'])) {
-		$password = wp_generate_password(12, false, false);
-		$hashed_password = wp_hash_password($password);
-		$expiry_time = time() + 86400;
-		$wpdb->replace(
-			$table_name,
-			[
-				'user_login' => $user_info->user_login,
-				'dd_pass' => $hashed_password,
-				'dd_pass_expiry' => $expiry_time
-			],
-			['%s', '%s', '%d']
-		);
-		echo '<p>Your new password: <strong>' . esc_html($password) . '</strong></p>';
-		echo '<p>Note that this password will not be displayed again.</p>';
-		echo '<p>If you lost password, please regenerate.</p>';
-	}
+// Add Data Download settings tab (subnav) to BuddyPress user settings
+function anemonedb_add_data_download() {
+	bp_core_new_subnav_item(array(
+		'name'            => 'Data Download',
+		'slug'            => 'data-download',
+		'parent_slug'     => 'settings',
+		'parent_url'      => trailingslashit(bp_loggedin_user_domain() . 'settings'),
+		'screen_function' => 'anemonedb_data_download_screen',
+		'position'        => 50,
+		'user_has_access' => bp_is_my_profile(),
+	));
 }
-add_action('bp_core_general_settings_after_save', 'anemonedb_save_dd_pass');
+add_action('bp_setup_nav', 'anemonedb_add_data_download', 10);
+
+// Screen function for Data Download settings page
+function anemonedb_data_download_screen() {
+	add_action('bp_template_content', 'anemonedb_display_dd_pass_section');
+	bp_core_load_template('members/single/plugins');
+}
 
 // Display data download password section
 function anemonedb_display_dd_pass_section() {
@@ -250,18 +259,75 @@ function anemonedb_display_dd_pass_section() {
 	$user_info = get_userdata($user_id);
 	$table_name = $wpdb->prefix . 'anemonedb_dd_users';
 	$data = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE user_login = %s", $user_info->user_login));
-	echo '<h2 class="general-settings-screen screen-heading">ANEMONE DB Data Download Password</h2>';
-	echo '<form method="post">';
+	echo '<h2 class="screen-heading general-settings-screen">Data Download Password Generator</h2>';
 	if ($data && $data->dd_pass_expiry > time()) {
-		echo '<p>Expires at: ' . date('Y-m-d H:i:s', $data->dd_pass_expiry) . '</p>';
-		echo '<button type="submit" name="generate_password">Regenerate</button>';
+		echo '<p class="info">Your data download password will be expired at ' . date('Y-m-d H:i T', $data->dd_pass_expiry) . '.</p>';
+		echo '<div class="info bp-feedback"><span class="bp-icon" aria-hidden="true"></span><p class="text">Click on the &quot;Regenerate Data Download Password&quot; button to regenerate and renew your temporary password for data download. This password is required to login to data file distribution area and is valid for 10 days. After 10 days, this password will be expired. <strong>The regenerated password will be shown only once.</strong> If you lost this password, you can regenerate password again and again.</p></div>';
+		echo '<form method="post" class="standard-form" id="your-profile">';
+		wp_nonce_field('anemonedb_generate_dd_pass', 'anemonedb_generate_dd_pass_nonce');
+		echo '<div class="wp-pwd"><button type="submit" name="generate_dd_pass" class="button">Regenerate Data Download Password</button></div>';
+		echo '</form>';
 	} else {
-		echo '<p>Password: <input type="text" value="Undefined yet" readonly></p>';
-		echo '<button type="submit" name="generate_password">Generate</button>';
+		echo '<p class="info">Generate your temporary password for data download if you want to access to the data file distribution area.</p>';
+		echo '<div class="info bp-feedback"><span class="bp-icon" aria-hidden="true"></span><p class="text">Click on the &quot;Generate Data Download Password&quot; button to generate your temporary password for data download. This password is required to login to data file distribution area and is valid for 10 days. After 10 days, this password will be expired. <strong>The generated password will be shown only once.</strong> If you lost this password, you can regenerate password.</p></div>';
+		echo '<form method="post" class="standard-form" id="your-profile">';
+		wp_nonce_field('anemonedb_generate_dd_pass', 'anemonedb_generate_dd_pass_nonce');
+		echo '<div class="wp-pwd"><button type="submit" name="generate_dd_pass" class="button">Generate Data Download Password</button></div>';
+		echo '</form>';
 	}
-	echo '</form>';
 }
-add_action('bp_core_general_settings_before_submit', 'anemonedb_display_dd_pass_section', 1);
+
+// Generate and save data download password
+function anemonedb_save_dd_pass() {
+	if (!is_user_logged_in() || !isset($_POST['generate_dd_pass'])) {
+		return;
+	}
+	if (!isset($_POST['anemonedb_generate_dd_pass_nonce']) || !wp_verify_nonce($_POST['anemonedb_generate_dd_pass_nonce'], 'anemonedb_generate_dd_pass')) {
+		wp_die('Security check failed.');
+	}
+	global $wpdb;
+	$user_id = get_current_user_id();
+	$user_info = get_userdata($user_id);
+	$table_name = $wpdb->prefix . 'anemonedb_dd_users';
+	if (isset($_POST['generate_dd_pass'])) {
+		$password = wp_generate_password(12, false, false);
+		$hashed_password = wp_hash_password($password);
+		$expiry_time = time() + (10 * 86400);
+		$wpdb->replace(
+			$table_name,
+			[
+				'user_login' => $user_info->user_login,
+				'dd_pass' => $hashed_password,
+				'dd_pass_expiry' => $expiry_time
+			],
+			['%s', '%s', '%d']
+		);
+		echo '<h2 class="screen-heading general-settings-screen">Your Data Download Password</h2>';
+		echo '<p class="info">Your temporary data download password is the following.</p>';
+		echo '<div class="wp-pwd"><input type="text" name="dd_pass" id="dd_pass" size="24" value="' . esc_attr($password) . '" class="settings-input" readonly data-clipboard-target="#dd_pass"><button type="button" id="copy_button" class="button" style="margin-left: 10px;" data-clipboard-target="#dd_pass">Copy</button><span id="copy_tooltip" style="display: none; margin-left: 10px; color: green;">Copied!</span></div>';
+		echo '<p class="info">This data download password will be expired at ' . date('Y-m-d H:i T', $expiry_time) . '.</p>';
+		echo '<div class="info bp-feedback"><span class="bp-icon" aria-hidden="true"></span><p class="text">Note that this password will not be displayed again. If you lost this password, please regenerate it.</p></div>';
+		echo '<script src="' . includes_url('js/clipboard.min.js') . '"></script>';
+		echo '<script>
+			document.addEventListener("DOMContentLoaded", function() {
+				var clipboard = new ClipboardJS("#copy_button, #dd_pass");
+				clipboard.on("success", function(e) {
+					var tooltip = document.getElementById("copy_tooltip");
+					tooltip.style.display = "inline";
+					setTimeout(function() {
+						tooltip.style.transition = "opacity 1s"; tooltip.style.opacity = "0";
+						setTimeout(function() {
+							tooltip.style.display = "none";
+							tooltip.style.opacity = "1";
+						}, 1000);
+					}, 3000);
+					e.clearSelection();
+				});
+			});
+		</script>';
+	}
+}
+add_action('bp_template_content', 'anemonedb_save_dd_pass', 1);
 
 // Schedule data download password cleanup
 function anemonedb_schedule_dd_pass_cleanup() {
