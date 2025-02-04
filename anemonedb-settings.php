@@ -514,29 +514,26 @@ add_action('init', 'anemonedb_post_types_init');
  */
 function anemonedb_sample_updated_messages( $messages ) {
 	global $post;
-
 	$permalink = get_permalink( $post );
-
 	$messages['sample'] = [
 		0  => '', // Unused. Messages start at index 1.
 		/* translators: %s: post permalink */
-		1  => sprintf( __( 'Samples updated. <a target="_blank" href="%s">View Samples</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
+		1  => sprintf( __( 'Sample updated. <a target="_blank" href="%s">View Sample</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
 		2  => __( 'Custom field updated.', 'anemonedb-settings' ),
 		3  => __( 'Custom field deleted.', 'anemonedb-settings' ),
-		4  => __( 'Samples updated.', 'anemonedb-settings' ),
+		4  => __( 'Sample updated.', 'anemonedb-settings' ),
 		/* translators: %s: date and time of the revision */
-		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Samples restored to revision from %s', 'anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Sample restored to revision from %s', 'anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		/* translators: %s: post permalink */
-		6  => sprintf( __( 'Samples published. <a href="%s">View Samples</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
-		7  => __( 'Samples saved.', 'anemonedb-settings' ),
+		6  => sprintf( __( 'Sample published. <a href="%s">View Samples</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
+		7  => __( 'Sample saved.', 'anemonedb-settings' ),
 		/* translators: %s: post permalink */
-		8  => sprintf( __( 'Samples submitted. <a target="_blank" href="%s">Preview Samples</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		8  => sprintf( __( 'Sample submitted. <a target="_blank" href="%s">Preview Sample</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 		/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
-		9  => sprintf( __( 'Samples scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Samples</a>', 'anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+		9  => sprintf( __( 'Sample scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Sample</a>', 'anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
 		/* translators: %s: post permalink */
-		10 => sprintf( __( 'Samples draft updated. <a target="_blank" href="%s">Preview Samples</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		10 => sprintf( __( 'Sample draft updated. <a target="_blank" href="%s">Preview Sample</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 	];
-
 	return $messages;
 }
 add_filter( 'post_updated_messages', 'anemonedb_sample_updated_messages' );
@@ -551,21 +548,19 @@ add_filter( 'post_updated_messages', 'anemonedb_sample_updated_messages' );
  */
 function anemonedb_sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
-
 	$bulk_messages['sample'] = [
 		/* translators: %s: Number of Samples. */
-		'updated'   => _n( '%s Samples updated.', '%s Samples updated.', $bulk_counts['updated'], 'anemonedb-settings' ),
-		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Samples not updated, somebody is editing it.', 'anemonedb-settings' ) :
+		'updated'   => _n( '%s Sample updated.', '%s Samples updated.', $bulk_counts['updated'], 'anemonedb-settings' ),
+		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Sample not updated, somebody is editing it.', 'anemonedb-settings' ) :
 						/* translators: %s: Number of Samples. */
-						_n( '%s Samples not updated, somebody is editing it.', '%s Samples not updated, somebody is editing them.', $bulk_counts['locked'], 'anemonedb-settings' ),
+						_n( '%s Sample not updated, somebody is editing it.', '%s Samples not updated, somebody is editing them.', $bulk_counts['locked'], 'anemonedb-settings' ),
 		/* translators: %s: Number of Samples. */
-		'deleted'   => _n( '%s Samples permanently deleted.', '%s Samples permanently deleted.', $bulk_counts['deleted'], 'anemonedb-settings' ),
+		'deleted'   => _n( '%s Sample permanently deleted.', '%s Samples permanently deleted.', $bulk_counts['deleted'], 'anemonedb-settings' ),
 		/* translators: %s: Number of Samples. */
-		'trashed'   => _n( '%s Samples moved to the Trash.', '%s Samples moved to the Trash.', $bulk_counts['trashed'], 'anemonedb-settings' ),
+		'trashed'   => _n( '%s Sample moved to the Trash.', '%s Samples moved to the Trash.', $bulk_counts['trashed'], 'anemonedb-settings' ),
 		/* translators: %s: Number of Samples. */
-		'untrashed' => _n( '%s Samples restored from the Trash.', '%s Samples restored from the Trash.', $bulk_counts['untrashed'], 'anemonedb-settings' ),
+		'untrashed' => _n( '%s Sample restored from the Trash.', '%s Samples restored from the Trash.', $bulk_counts['untrashed'], 'anemonedb-settings' ),
 	];
-
 	return $bulk_messages;
 }
 add_filter( 'bulk_post_updated_messages', 'anemonedb_sample_bulk_updated_messages', 10, 2 );
@@ -578,29 +573,26 @@ add_filter( 'bulk_post_updated_messages', 'anemonedb_sample_bulk_updated_message
  */
 function anemonedb_map_updated_messages( $messages ) {
 	global $post;
-
 	$permalink = get_permalink( $post );
-
 	$messages['map'] = [
 		0  => '', // Unused. Messages start at index 1.
 		/* translators: %s: post permalink */
-		1  => sprintf( __( 'Maps updated. <a target="_blank" href="%s">View Maps</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
+		1  => sprintf( __( 'Map updated. <a target="_blank" href="%s">View Map</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
 		2  => __( 'Custom field updated.', 'anemonedb-settings' ),
 		3  => __( 'Custom field deleted.', 'anemonedb-settings' ),
-		4  => __( 'Maps updated.', 'anemonedb-settings' ),
+		4  => __( 'Map updated.', 'anemonedb-settings' ),
 		/* translators: %s: date and time of the revision */
-		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Maps restored to revision from %s', 'anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Map restored to revision from %s', 'anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		/* translators: %s: post permalink */
-		6  => sprintf( __( 'Maps published. <a href="%s">View Maps</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
-		7  => __( 'Maps saved.', 'anemonedb-settings' ),
+		6  => sprintf( __( 'Map published. <a href="%s">View Map</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
+		7  => __( 'Map saved.', 'anemonedb-settings' ),
 		/* translators: %s: post permalink */
-		8  => sprintf( __( 'Maps submitted. <a target="_blank" href="%s">Preview Maps</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		8  => sprintf( __( 'Map submitted. <a target="_blank" href="%s">Preview Map</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 		/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
-		9  => sprintf( __( 'Maps scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Maps</a>', 'anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+		9  => sprintf( __( 'Map scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Map</a>', 'anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
 		/* translators: %s: post permalink */
-		10 => sprintf( __( 'Maps draft updated. <a target="_blank" href="%s">Preview Maps</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		10 => sprintf( __( 'Map draft updated. <a target="_blank" href="%s">Preview Map</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 	];
-
 	return $messages;
 }
 add_filter( 'post_updated_messages', 'anemonedb_map_updated_messages' );
@@ -615,21 +607,19 @@ add_filter( 'post_updated_messages', 'anemonedb_map_updated_messages' );
  */
 function anemonedb_map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
-
 	$bulk_messages['map'] = [
 		/* translators: %s: Number of Maps. */
-		'updated'   => _n( '%s Maps updated.', '%s Maps updated.', $bulk_counts['updated'], 'anemonedb-settings' ),
-		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Maps not updated, somebody is editing it.', 'anemonedb-settings' ) :
+		'updated'   => _n( '%s Map updated.', '%s Maps updated.', $bulk_counts['updated'], 'anemonedb-settings' ),
+		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Map not updated, somebody is editing it.', 'anemonedb-settings' ) :
 						/* translators: %s: Number of Maps. */
-						_n( '%s Maps not updated, somebody is editing it.', '%s Maps not updated, somebody is editing them.', $bulk_counts['locked'], 'anemonedb-settings' ),
+						_n( '%s Map not updated, somebody is editing it.', '%s Maps not updated, somebody is editing them.', $bulk_counts['locked'], 'anemonedb-settings' ),
 		/* translators: %s: Number of Maps. */
-		'deleted'   => _n( '%s Maps permanently deleted.', '%s Maps permanently deleted.', $bulk_counts['deleted'], 'anemonedb-settings' ),
+		'deleted'   => _n( '%s Map permanently deleted.', '%s Maps permanently deleted.', $bulk_counts['deleted'], 'anemonedb-settings' ),
 		/* translators: %s: Number of Maps. */
-		'trashed'   => _n( '%s Maps moved to the Trash.', '%s Maps moved to the Trash.', $bulk_counts['trashed'], 'anemonedb-settings' ),
+		'trashed'   => _n( '%s Map moved to the Trash.', '%s Maps moved to the Trash.', $bulk_counts['trashed'], 'anemonedb-settings' ),
 		/* translators: %s: Number of Maps. */
-		'untrashed' => _n( '%s Maps restored from the Trash.', '%s Maps restored from the Trash.', $bulk_counts['untrashed'], 'anemonedb-settings' ),
+		'untrashed' => _n( '%s Map restored from the Trash.', '%s Maps restored from the Trash.', $bulk_counts['untrashed'], 'anemonedb-settings' ),
 	];
-
 	return $bulk_messages;
 }
 add_filter( 'bulk_post_updated_messages', 'anemonedb_map_bulk_updated_messages', 10, 2 );
@@ -834,7 +824,6 @@ add_action('init', 'anemonedb_taxonomies_init');
  * @return array Messages for the `meshcode2` taxonomy.
  */
 function anemonedb_meshcode2_updated_messages( $messages ) {
-
 	$messages['meshcode2'] = [
 		0 => '', // Unused. Messages start at index 1.
 		1 => __( 'Meshcode2 added.', 'anemonedb-settings' ),
@@ -842,9 +831,8 @@ function anemonedb_meshcode2_updated_messages( $messages ) {
 		3 => __( 'Meshcode2 updated.', 'anemonedb-settings' ),
 		4 => __( 'Meshcode2 not added.', 'anemonedb-settings' ),
 		5 => __( 'Meshcode2 not updated.', 'anemonedb-settings' ),
-		6 => __( 'Meshcode2s deleted.', 'anemonedb-settings' ),
+		6 => __( 'Meshcode2 deleted.', 'anemonedb-settings' ),
 	];
-
 	return $messages;
 }
 add_filter( 'term_updated_messages', 'anemonedb_meshcode2_updated_messages' );
@@ -856,17 +844,15 @@ add_filter( 'term_updated_messages', 'anemonedb_meshcode2_updated_messages' );
  * @return array Messages for the `project` taxonomy.
  */
 function anemonedb_project_updated_messages( $messages ) {
-
 	$messages['project'] = [
 		0 => '', // Unused. Messages start at index 1.
-		1 => __( 'Projects added.', 'anemonedb-settings' ),
-		2 => __( 'Projects deleted.', 'anemonedb-settings' ),
-		3 => __( 'Projects updated.', 'anemonedb-settings' ),
-		4 => __( 'Projects not added.', 'anemonedb-settings' ),
-		5 => __( 'Projects not updated.', 'anemonedb-settings' ),
+		1 => __( 'Project added.', 'anemonedb-settings' ),
+		2 => __( 'Project deleted.', 'anemonedb-settings' ),
+		3 => __( 'Project updated.', 'anemonedb-settings' ),
+		4 => __( 'Project not added.', 'anemonedb-settings' ),
+		5 => __( 'Project not updated.', 'anemonedb-settings' ),
 		6 => __( 'Projects deleted.', 'anemonedb-settings' ),
 	];
-
 	return $messages;
 }
 add_filter( 'term_updated_messages', 'anemonedb_project_updated_messages' );
@@ -878,17 +864,15 @@ add_filter( 'term_updated_messages', 'anemonedb_project_updated_messages' );
  * @return array Messages for the `taxon` taxonomy.
  */
 function anemonedb_taxon_updated_messages( $messages ) {
-
 	$messages['taxon'] = [
 		0 => '', // Unused. Messages start at index 1.
-		1 => __( 'Taxa added.', 'anemonedb-settings' ),
-		2 => __( 'Taxa deleted.', 'anemonedb-settings' ),
-		3 => __( 'Taxa updated.', 'anemonedb-settings' ),
-		4 => __( 'Taxa not added.', 'anemonedb-settings' ),
-		5 => __( 'Taxa not updated.', 'anemonedb-settings' ),
-		6 => __( 'Taxas deleted.', 'anemonedb-settings' ),
+		1 => __( 'Taxon added.', 'anemonedb-settings' ),
+		2 => __( 'Taxon deleted.', 'anemonedb-settings' ),
+		3 => __( 'Taxon updated.', 'anemonedb-settings' ),
+		4 => __( 'Taxon not added.', 'anemonedb-settings' ),
+		5 => __( 'Taxon not updated.', 'anemonedb-settings' ),
+		6 => __( 'Taxa deleted.', 'anemonedb-settings' ),
 	];
-
 	return $messages;
 }
 add_filter( 'term_updated_messages', 'anemonedb_taxon_updated_messages' );
@@ -900,17 +884,15 @@ add_filter( 'term_updated_messages', 'anemonedb_taxon_updated_messages' );
  * @return array Messages for the `yearmonth` taxonomy.
  */
 function anemonedb_yearmonth_updated_messages( $messages ) {
-
 	$messages['yearmonth'] = [
 		0 => '', // Unused. Messages start at index 1.
-		1 => __( 'YearMonths added.', 'anemonedb-settings' ),
-		2 => __( 'YearMonths deleted.', 'anemonedb-settings' ),
-		3 => __( 'YearMonths updated.', 'anemonedb-settings' ),
-		4 => __( 'YearMonths not added.', 'anemonedb-settings' ),
-		5 => __( 'YearMonths not updated.', 'anemonedb-settings' ),
+		1 => __( 'YearMonth added.', 'anemonedb-settings' ),
+		2 => __( 'YearMonth deleted.', 'anemonedb-settings' ),
+		3 => __( 'YearMonth updated.', 'anemonedb-settings' ),
+		4 => __( 'YearMonth not added.', 'anemonedb-settings' ),
+		5 => __( 'YearMonth not updated.', 'anemonedb-settings' ),
 		6 => __( 'YearMonths deleted.', 'anemonedb-settings' ),
 	];
-
 	return $messages;
 }
 add_filter( 'term_updated_messages', 'anemonedb_yearmonth_updated_messages' );
