@@ -220,6 +220,16 @@ function anemonedb_remove_notifications() {
 }
 add_action( 'bp_setup_nav', 'anemonedb_remove_notifications', 999 );
 
+// Disable adminbar submenu of "Profile Visibility" and "Email"
+function anemonedb_remove_submenu_from_adminbar_settings() {
+	if (is_admin_bar_showing() && function_exists('buddypress')) {
+		global $wp_admin_bar;
+		$wp_admin_bar->remove_menu('my-account-settings-profile');
+		$wp_admin_bar->remove_menu('my-account-settings-notifications');
+	}
+}
+add_action('admin_bar_menu', 'anemonedb_remove_submenu_from_adminbar_settings', 999);
+
 // Create table
 function anemonedb_create_dd_users_table() {
 	global $wpdb;
@@ -255,6 +265,20 @@ function anemonedb_add_data_download() {
 	));
 }
 add_action('bp_setup_nav', 'anemonedb_add_data_download', 10);
+
+// Add Data Download submenu to adminbar "Settings" menu
+function anemonedb_add_submenu_to_adminbar_settings() {
+	if (is_admin_bar_showing() && function_exists('buddypress')) {
+		global $wp_admin_bar;
+		$wp_admin_bar->add_menu(array(
+			'parent' => 'my-account-settings',
+			'id'     => 'my-account-settings-data-download',
+			'title'  => 'Data Download',
+			'href'   => bp_loggedin_user_domain() . 'settings/data-download/',
+		));
+	}
+}
+add_action('wp_before_admin_bar_render', 'anemonedb_add_submenu_to_adminbar_settings', 999);
 
 // Screen function for Data Download settings page
 function anemonedb_data_download_screen() {
