@@ -208,17 +208,12 @@ function anemonedb_remove_export_data() {
 }
 add_filter( 'bp_settings_show_user_data_page', 'anemonedb_remove_export_data' );
 
-// Disable "Profile Visibility" page
-function anemonedb_remove_profile_visibility() {
+// Disable "Profile Visibility" and "Email" pages
+function anemonedb_remove_subnav_item() {
 	bp_core_remove_subnav_item( 'settings', 'profile' );
-}
-add_action( 'bp_setup_nav', 'anemonedb_remove_profile_visibility', 999 );
-
-// Disable "Email" page
-function anemonedb_remove_notifications() {
 	bp_core_remove_subnav_item( 'settings', 'notifications' );
 }
-add_action( 'bp_setup_nav', 'anemonedb_remove_notifications', 999 );
+add_action( 'bp_setup_nav', 'anemonedb_remove_subnav_item', 999 );
 
 // Disable adminbar submenu of "Profile Visibility" and "Email"
 function anemonedb_remove_submenu_from_adminbar_settings() {
