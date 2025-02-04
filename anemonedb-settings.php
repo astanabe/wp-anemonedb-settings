@@ -493,7 +493,7 @@ add_action('init', 'anemonedb_post_types_init');
  * @param  array $messages Post updated messages.
  * @return array Messages for the `sample` post type.
  */
-function sample_updated_messages( $messages ) {
+function anemonedb_sample_updated_messages( $messages ) {
 	global $post;
 
 	$permalink = get_permalink( $post );
@@ -520,7 +520,7 @@ function sample_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'post_updated_messages', 'sample_updated_messages' );
+add_filter( 'post_updated_messages', 'anemonedb_sample_updated_messages' );
 
 /**
  * Sets the bulk post updated messages for the `sample` post type.
@@ -530,7 +530,7 @@ add_filter( 'post_updated_messages', 'sample_updated_messages' );
  * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
  * @return array Bulk messages for the `sample` post type.
  */
-function sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+function anemonedb_sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
 
 	$bulk_messages['sample'] = [
@@ -549,7 +549,7 @@ function sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 
 	return $bulk_messages;
 }
-add_filter( 'bulk_post_updated_messages', 'sample_bulk_updated_messages', 10, 2 );
+add_filter( 'bulk_post_updated_messages', 'anemonedb_sample_bulk_updated_messages', 10, 2 );
 
 /**
  * Sets the post updated messages for the `map` post type.
@@ -557,7 +557,7 @@ add_filter( 'bulk_post_updated_messages', 'sample_bulk_updated_messages', 10, 2 
  * @param  array $messages Post updated messages.
  * @return array Messages for the `map` post type.
  */
-function map_updated_messages( $messages ) {
+function anemonedb_map_updated_messages( $messages ) {
 	global $post;
 
 	$permalink = get_permalink( $post );
@@ -584,7 +584,7 @@ function map_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'post_updated_messages', 'map_updated_messages' );
+add_filter( 'post_updated_messages', 'anemonedb_map_updated_messages' );
 
 /**
  * Sets the bulk post updated messages for the `map` post type.
@@ -594,7 +594,7 @@ add_filter( 'post_updated_messages', 'map_updated_messages' );
  * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
  * @return array Bulk messages for the `map` post type.
  */
-function map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+function anemonedb_map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
 
 	$bulk_messages['map'] = [
@@ -613,7 +613,7 @@ function map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 
 	return $bulk_messages;
 }
-add_filter( 'bulk_post_updated_messages', 'map_bulk_updated_messages', 10, 2 );
+add_filter( 'bulk_post_updated_messages', 'anemonedb_map_bulk_updated_messages', 10, 2 );
 
 // Register custom taxonomies
 function anemonedb_taxonomies_init() {
@@ -814,7 +814,7 @@ add_action('init', 'anemonedb_taxonomies_init');
  * @param  array $messages Post updated messages.
  * @return array Messages for the `meshcode2` taxonomy.
  */
-function meshcode2_updated_messages( $messages ) {
+function anemonedb_meshcode2_updated_messages( $messages ) {
 
 	$messages['meshcode2'] = [
 		0 => '', // Unused. Messages start at index 1.
@@ -828,7 +828,7 @@ function meshcode2_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'meshcode2_updated_messages' );
+add_filter( 'term_updated_messages', 'anemonedb_meshcode2_updated_messages' );
 
 /**
  * Sets the post updated messages for the `project` taxonomy.
@@ -836,7 +836,7 @@ add_filter( 'term_updated_messages', 'meshcode2_updated_messages' );
  * @param  array $messages Post updated messages.
  * @return array Messages for the `project` taxonomy.
  */
-function project_updated_messages( $messages ) {
+function anemonedb_project_updated_messages( $messages ) {
 
 	$messages['project'] = [
 		0 => '', // Unused. Messages start at index 1.
@@ -850,7 +850,7 @@ function project_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'project_updated_messages' );
+add_filter( 'term_updated_messages', 'anemonedb_project_updated_messages' );
 
 /**
  * Sets the post updated messages for the `taxon` taxonomy.
@@ -858,7 +858,7 @@ add_filter( 'term_updated_messages', 'project_updated_messages' );
  * @param  array $messages Post updated messages.
  * @return array Messages for the `taxon` taxonomy.
  */
-function taxon_updated_messages( $messages ) {
+function anemonedb_taxon_updated_messages( $messages ) {
 
 	$messages['taxon'] = [
 		0 => '', // Unused. Messages start at index 1.
@@ -872,7 +872,7 @@ function taxon_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'taxon_updated_messages' );
+add_filter( 'term_updated_messages', 'anemonedb_taxon_updated_messages' );
 
 /**
  * Sets the post updated messages for the `yearmonth` taxonomy.
@@ -880,7 +880,7 @@ add_filter( 'term_updated_messages', 'taxon_updated_messages' );
  * @param  array $messages Post updated messages.
  * @return array Messages for the `yearmonth` taxonomy.
  */
-function yearmonth_updated_messages( $messages ) {
+function anemonedb_yearmonth_updated_messages( $messages ) {
 
 	$messages['yearmonth'] = [
 		0 => '', // Unused. Messages start at index 1.
@@ -894,7 +894,7 @@ function yearmonth_updated_messages( $messages ) {
 
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'yearmonth_updated_messages' );
+add_filter( 'term_updated_messages', 'anemonedb_yearmonth_updated_messages' );
 
 // Modify post type link to include taxonomy term
 function anemonedb_permalink_structure($post_link, $post) {
