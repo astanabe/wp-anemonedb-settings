@@ -1,19 +1,19 @@
 <?php
 /**
  * Plugin Name:       ANEMONE DB Settings
- * Plugin URI:        https://github.com/astanabe/anemonedb-settings
+ * Plugin URI:        https://github.com/astanabe/wp-anemonedb-settings
  * Description:       ANEMONE DB Settings Plugin for WordPress
  * Author:            Akifumi S. Tanabe
  * Author URI:        https://github.com/astanabe
  * License:           GNU General Public License v2
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       anemonedb-settings
+ * Text Domain:       wp-anemonedb-settings
  * Domain Path:       /languages
  * Version:           0.1.0
  * Requires at least: 6.4
  * Requires Plugins:  buddypress, bp-classic, two-factor, tinymce-advanced, leaflet-map, extensions-leaflet-map, page-list
  *
- * @package           Anemonedb_Settings
+ * @package           WP_Anemonedb_Settings
  */
 
 // Security check
@@ -138,7 +138,7 @@ add_filter('the_content', 'anemonedb_override_frontpage_for_loggedin_users');
 function anemonedb_namelength_validation() {
 	if ( strlen( $_POST['signup_username'] ) > 50 ) {
 		global $bp;
-		$bp->signup->errors['signup_username'] = __( 'ERROR!: Your Name is too long.', 'anemonedb-settings' );
+		$bp->signup->errors['signup_username'] = __( 'ERROR!: Your Name is too long.', 'wp-anemonedb-settings' );
 	}
 }
 add_action( 'bp_signup_validate', 'anemonedb_namelength_validation' );
@@ -463,40 +463,40 @@ function anemonedb_post_types_init() {
 		'sample',
 		[
 			'labels' => [
-				'name' => esc_html__( 'Samples', 'anemonedb-settings' ),
-				'singular_name' => esc_html__( 'Sample', 'anemonedb-settings' ),
-				'menu_name' => esc_html__( 'Samples', 'anemonedb-settings' ),
-				'all_items' => esc_html__( 'All Samples', 'anemonedb-settings' ),
-				'add_new' => esc_html__( 'Add new', 'anemonedb-settings' ),
-				'add_new_item' => esc_html__( 'Add new Sample', 'anemonedb-settings' ),
-				'edit_item' => esc_html__( 'Edit Sample', 'anemonedb-settings' ),
-				'new_item' => esc_html__( 'New Sample', 'anemonedb-settings' ),
-				'view_item' => esc_html__( 'View Sample', 'anemonedb-settings' ),
-				'view_items' => esc_html__( 'View Samples', 'anemonedb-settings' ),
-				'search_items' => esc_html__( 'Search Samples', 'anemonedb-settings' ),
-				'not_found' => esc_html__( 'No Samples found', 'anemonedb-settings' ),
-				'not_found_in_trash' => esc_html__( 'No Samples found in trash', 'anemonedb-settings' ),
-				'parent' => esc_html__( 'Parent Sample:', 'anemonedb-settings' ),
-				'featured_image' => esc_html__( 'Featured image for this Sample', 'anemonedb-settings' ),
-				'set_featured_image' => esc_html__( 'Set featured image for this Sample', 'anemonedb-settings' ),
-				'remove_featured_image' => esc_html__( 'Remove featured image for this Sample', 'anemonedb-settings' ),
-				'use_featured_image' => esc_html__( 'Use as featured image for this Sample', 'anemonedb-settings' ),
-				'archives' => esc_html__( 'Sample archives', 'anemonedb-settings' ),
-				'insert_into_item' => esc_html__( 'Insert into Sample', 'anemonedb-settings' ),
-				'uploaded_to_this_item' => esc_html__( 'Upload to this Sample', 'anemonedb-settings' ),
-				'filter_items_list' => esc_html__( 'Filter Samples list', 'anemonedb-settings' ),
-				'items_list_navigation' => esc_html__( 'Samples list navigation', 'anemonedb-settings' ),
-				'items_list' => esc_html__( 'Samples list', 'anemonedb-settings' ),
-				'attributes' => esc_html__( 'Samples attributes', 'anemonedb-settings' ),
-				'name_admin_bar' => esc_html__( 'Sample', 'anemonedb-settings' ),
-				'item_published' => esc_html__( 'Sample published', 'anemonedb-settings' ),
-				'item_published_privately' => esc_html__( 'Sample published privately.', 'anemonedb-settings' ),
-				'item_reverted_to_draft' => esc_html__( 'Sample reverted to draft.', 'anemonedb-settings' ),
-				'item_scheduled' => esc_html__( 'Sample scheduled', 'anemonedb-settings' ),
-				'item_updated' => esc_html__( 'Sample updated.', 'anemonedb-settings' ),
-				'parent_item_colon' => esc_html__( 'Parent Sample:', 'anemonedb-settings' ),
+				'name' => esc_html__( 'Samples', 'wp-anemonedb-settings' ),
+				'singular_name' => esc_html__( 'Sample', 'wp-anemonedb-settings' ),
+				'menu_name' => esc_html__( 'Samples', 'wp-anemonedb-settings' ),
+				'all_items' => esc_html__( 'All Samples', 'wp-anemonedb-settings' ),
+				'add_new' => esc_html__( 'Add new', 'wp-anemonedb-settings' ),
+				'add_new_item' => esc_html__( 'Add new Sample', 'wp-anemonedb-settings' ),
+				'edit_item' => esc_html__( 'Edit Sample', 'wp-anemonedb-settings' ),
+				'new_item' => esc_html__( 'New Sample', 'wp-anemonedb-settings' ),
+				'view_item' => esc_html__( 'View Sample', 'wp-anemonedb-settings' ),
+				'view_items' => esc_html__( 'View Samples', 'wp-anemonedb-settings' ),
+				'search_items' => esc_html__( 'Search Samples', 'wp-anemonedb-settings' ),
+				'not_found' => esc_html__( 'No Samples found', 'wp-anemonedb-settings' ),
+				'not_found_in_trash' => esc_html__( 'No Samples found in trash', 'wp-anemonedb-settings' ),
+				'parent' => esc_html__( 'Parent Sample:', 'wp-anemonedb-settings' ),
+				'featured_image' => esc_html__( 'Featured image for this Sample', 'wp-anemonedb-settings' ),
+				'set_featured_image' => esc_html__( 'Set featured image for this Sample', 'wp-anemonedb-settings' ),
+				'remove_featured_image' => esc_html__( 'Remove featured image for this Sample', 'wp-anemonedb-settings' ),
+				'use_featured_image' => esc_html__( 'Use as featured image for this Sample', 'wp-anemonedb-settings' ),
+				'archives' => esc_html__( 'Sample archives', 'wp-anemonedb-settings' ),
+				'insert_into_item' => esc_html__( 'Insert into Sample', 'wp-anemonedb-settings' ),
+				'uploaded_to_this_item' => esc_html__( 'Upload to this Sample', 'wp-anemonedb-settings' ),
+				'filter_items_list' => esc_html__( 'Filter Samples list', 'wp-anemonedb-settings' ),
+				'items_list_navigation' => esc_html__( 'Samples list navigation', 'wp-anemonedb-settings' ),
+				'items_list' => esc_html__( 'Samples list', 'wp-anemonedb-settings' ),
+				'attributes' => esc_html__( 'Samples attributes', 'wp-anemonedb-settings' ),
+				'name_admin_bar' => esc_html__( 'Sample', 'wp-anemonedb-settings' ),
+				'item_published' => esc_html__( 'Sample published', 'wp-anemonedb-settings' ),
+				'item_published_privately' => esc_html__( 'Sample published privately.', 'wp-anemonedb-settings' ),
+				'item_reverted_to_draft' => esc_html__( 'Sample reverted to draft.', 'wp-anemonedb-settings' ),
+				'item_scheduled' => esc_html__( 'Sample scheduled', 'wp-anemonedb-settings' ),
+				'item_updated' => esc_html__( 'Sample updated.', 'wp-anemonedb-settings' ),
+				'parent_item_colon' => esc_html__( 'Parent Sample:', 'wp-anemonedb-settings' ),
 			],
-			'label' => esc_html__( 'Samples', 'anemonedb-settings' ),
+			'label' => esc_html__( 'Samples', 'wp-anemonedb-settings' ),
 			'description' => 'DNA metabarcoding samples',
 			'public' => true,
 			'publicly_queryable' => true,
@@ -525,40 +525,40 @@ function anemonedb_post_types_init() {
 		'map',
 		[
 			'labels' => [
-				'name' => esc_html__( 'Maps', 'anemonedb-settings' ),
-				'singular_name' => esc_html__( 'Map', 'anemonedb-settings' ),
-				'menu_name' => esc_html__( 'Maps', 'anemonedb-settings' ),
-				'all_items' => esc_html__( 'All Maps', 'anemonedb-settings' ),
-				'add_new' => esc_html__( 'Add new', 'anemonedb-settings' ),
-				'add_new_item' => esc_html__( 'Add new Map', 'anemonedb-settings' ),
-				'edit_item' => esc_html__( 'Edit Map', 'anemonedb-settings' ),
-				'new_item' => esc_html__( 'New Map', 'anemonedb-settings' ),
-				'view_item' => esc_html__( 'View Map', 'anemonedb-settings' ),
-				'view_items' => esc_html__( 'View Maps', 'anemonedb-settings' ),
-				'search_items' => esc_html__( 'Search Maps', 'anemonedb-settings' ),
-				'not_found' => esc_html__( 'No Maps found', 'anemonedb-settings' ),
-				'not_found_in_trash' => esc_html__( 'No Maps found in trash', 'anemonedb-settings' ),
-				'parent' => esc_html__( 'Parent Map:', 'anemonedb-settings' ),
-				'featured_image' => esc_html__( 'Featured image for this Map', 'anemonedb-settings' ),
-				'set_featured_image' => esc_html__( 'Set featured image for this Map', 'anemonedb-settings' ),
-				'remove_featured_image' => esc_html__( 'Remove featured image for this Map', 'anemonedb-settings' ),
-				'use_featured_image' => esc_html__( 'Use as featured image for this Map', 'anemonedb-settings' ),
-				'archives' => esc_html__( 'Map archives', 'anemonedb-settings' ),
-				'insert_into_item' => esc_html__( 'Insert into Map', 'anemonedb-settings' ),
-				'uploaded_to_this_item' => esc_html__( 'Upload to this Map', 'anemonedb-settings' ),
-				'filter_items_list' => esc_html__( 'Filter Maps list', 'anemonedb-settings' ),
-				'items_list_navigation' => esc_html__( 'Maps list navigation', 'anemonedb-settings' ),
-				'items_list' => esc_html__( 'Maps list', 'anemonedb-settings' ),
-				'attributes' => esc_html__( 'Maps attributes', 'anemonedb-settings' ),
-				'name_admin_bar' => esc_html__( 'Map', 'anemonedb-settings' ),
-				'item_published' => esc_html__( 'Map published', 'anemonedb-settings' ),
-				'item_published_privately' => esc_html__( 'Map published privately.', 'anemonedb-settings' ),
-				'item_reverted_to_draft' => esc_html__( 'Map reverted to draft.', 'anemonedb-settings' ),
-				'item_scheduled' => esc_html__( 'Map scheduled', 'anemonedb-settings' ),
-				'item_updated' => esc_html__( 'Map updated.', 'anemonedb-settings' ),
-				'parent_item_colon' => esc_html__( 'Parent Map:', 'anemonedb-settings' ),
+				'name' => esc_html__( 'Maps', 'wp-anemonedb-settings' ),
+				'singular_name' => esc_html__( 'Map', 'wp-anemonedb-settings' ),
+				'menu_name' => esc_html__( 'Maps', 'wp-anemonedb-settings' ),
+				'all_items' => esc_html__( 'All Maps', 'wp-anemonedb-settings' ),
+				'add_new' => esc_html__( 'Add new', 'wp-anemonedb-settings' ),
+				'add_new_item' => esc_html__( 'Add new Map', 'wp-anemonedb-settings' ),
+				'edit_item' => esc_html__( 'Edit Map', 'wp-anemonedb-settings' ),
+				'new_item' => esc_html__( 'New Map', 'wp-anemonedb-settings' ),
+				'view_item' => esc_html__( 'View Map', 'wp-anemonedb-settings' ),
+				'view_items' => esc_html__( 'View Maps', 'wp-anemonedb-settings' ),
+				'search_items' => esc_html__( 'Search Maps', 'wp-anemonedb-settings' ),
+				'not_found' => esc_html__( 'No Maps found', 'wp-anemonedb-settings' ),
+				'not_found_in_trash' => esc_html__( 'No Maps found in trash', 'wp-anemonedb-settings' ),
+				'parent' => esc_html__( 'Parent Map:', 'wp-anemonedb-settings' ),
+				'featured_image' => esc_html__( 'Featured image for this Map', 'wp-anemonedb-settings' ),
+				'set_featured_image' => esc_html__( 'Set featured image for this Map', 'wp-anemonedb-settings' ),
+				'remove_featured_image' => esc_html__( 'Remove featured image for this Map', 'wp-anemonedb-settings' ),
+				'use_featured_image' => esc_html__( 'Use as featured image for this Map', 'wp-anemonedb-settings' ),
+				'archives' => esc_html__( 'Map archives', 'wp-anemonedb-settings' ),
+				'insert_into_item' => esc_html__( 'Insert into Map', 'wp-anemonedb-settings' ),
+				'uploaded_to_this_item' => esc_html__( 'Upload to this Map', 'wp-anemonedb-settings' ),
+				'filter_items_list' => esc_html__( 'Filter Maps list', 'wp-anemonedb-settings' ),
+				'items_list_navigation' => esc_html__( 'Maps list navigation', 'wp-anemonedb-settings' ),
+				'items_list' => esc_html__( 'Maps list', 'wp-anemonedb-settings' ),
+				'attributes' => esc_html__( 'Maps attributes', 'wp-anemonedb-settings' ),
+				'name_admin_bar' => esc_html__( 'Map', 'wp-anemonedb-settings' ),
+				'item_published' => esc_html__( 'Map published', 'wp-anemonedb-settings' ),
+				'item_published_privately' => esc_html__( 'Map published privately.', 'wp-anemonedb-settings' ),
+				'item_reverted_to_draft' => esc_html__( 'Map reverted to draft.', 'wp-anemonedb-settings' ),
+				'item_scheduled' => esc_html__( 'Map scheduled', 'wp-anemonedb-settings' ),
+				'item_updated' => esc_html__( 'Map updated.', 'wp-anemonedb-settings' ),
+				'parent_item_colon' => esc_html__( 'Parent Map:', 'wp-anemonedb-settings' ),
 			],
-			'label' => esc_html__( 'Maps', 'anemonedb-settings' ),
+			'label' => esc_html__( 'Maps', 'wp-anemonedb-settings' ),
 			'description' => '',
 			'public' => true,
 			'publicly_queryable' => true,
@@ -597,21 +597,21 @@ function anemonedb_sample_updated_messages( $messages ) {
 	$messages['sample'] = [
 		0  => '', // Unused. Messages start at index 1.
 		/* translators: %s: post permalink */
-		1  => sprintf( __( 'Sample updated. <a target="_blank" href="%s">View Sample</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
-		2  => __( 'Custom field updated.', 'anemonedb-settings' ),
-		3  => __( 'Custom field deleted.', 'anemonedb-settings' ),
-		4  => __( 'Sample updated.', 'anemonedb-settings' ),
+		1  => sprintf( __( 'Sample updated. <a target="_blank" href="%s">View Sample</a>', 'wp-anemonedb-settings' ), esc_url( $permalink ) ),
+		2  => __( 'Custom field updated.', 'wp-anemonedb-settings' ),
+		3  => __( 'Custom field deleted.', 'wp-anemonedb-settings' ),
+		4  => __( 'Sample updated.', 'wp-anemonedb-settings' ),
 		/* translators: %s: date and time of the revision */
-		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Sample restored to revision from %s', 'anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Sample restored to revision from %s', 'wp-anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		/* translators: %s: post permalink */
-		6  => sprintf( __( 'Sample published. <a href="%s">View Samples</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
-		7  => __( 'Sample saved.', 'anemonedb-settings' ),
+		6  => sprintf( __( 'Sample published. <a href="%s">View Samples</a>', 'wp-anemonedb-settings' ), esc_url( $permalink ) ),
+		7  => __( 'Sample saved.', 'wp-anemonedb-settings' ),
 		/* translators: %s: post permalink */
-		8  => sprintf( __( 'Sample submitted. <a target="_blank" href="%s">Preview Sample</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		8  => sprintf( __( 'Sample submitted. <a target="_blank" href="%s">Preview Sample</a>', 'wp-anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 		/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
-		9  => sprintf( __( 'Sample scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Sample</a>', 'anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+		9  => sprintf( __( 'Sample scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Sample</a>', 'wp-anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'wp-anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
 		/* translators: %s: post permalink */
-		10 => sprintf( __( 'Sample draft updated. <a target="_blank" href="%s">Preview Sample</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		10 => sprintf( __( 'Sample draft updated. <a target="_blank" href="%s">Preview Sample</a>', 'wp-anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 	];
 	return $messages;
 }
@@ -629,16 +629,16 @@ function anemonedb_sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) 
 	global $post;
 	$bulk_messages['sample'] = [
 		/* translators: %s: Number of Samples. */
-		'updated'   => _n( '%s Sample updated.', '%s Samples updated.', $bulk_counts['updated'], 'anemonedb-settings' ),
-		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Sample not updated, somebody is editing it.', 'anemonedb-settings' ) :
+		'updated'   => _n( '%s Sample updated.', '%s Samples updated.', $bulk_counts['updated'], 'wp-anemonedb-settings' ),
+		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Sample not updated, somebody is editing it.', 'wp-anemonedb-settings' ) :
 						/* translators: %s: Number of Samples. */
-						_n( '%s Sample not updated, somebody is editing it.', '%s Samples not updated, somebody is editing them.', $bulk_counts['locked'], 'anemonedb-settings' ),
+						_n( '%s Sample not updated, somebody is editing it.', '%s Samples not updated, somebody is editing them.', $bulk_counts['locked'], 'wp-anemonedb-settings' ),
 		/* translators: %s: Number of Samples. */
-		'deleted'   => _n( '%s Sample permanently deleted.', '%s Samples permanently deleted.', $bulk_counts['deleted'], 'anemonedb-settings' ),
+		'deleted'   => _n( '%s Sample permanently deleted.', '%s Samples permanently deleted.', $bulk_counts['deleted'], 'wp-anemonedb-settings' ),
 		/* translators: %s: Number of Samples. */
-		'trashed'   => _n( '%s Sample moved to the Trash.', '%s Samples moved to the Trash.', $bulk_counts['trashed'], 'anemonedb-settings' ),
+		'trashed'   => _n( '%s Sample moved to the Trash.', '%s Samples moved to the Trash.', $bulk_counts['trashed'], 'wp-anemonedb-settings' ),
 		/* translators: %s: Number of Samples. */
-		'untrashed' => _n( '%s Sample restored from the Trash.', '%s Samples restored from the Trash.', $bulk_counts['untrashed'], 'anemonedb-settings' ),
+		'untrashed' => _n( '%s Sample restored from the Trash.', '%s Samples restored from the Trash.', $bulk_counts['untrashed'], 'wp-anemonedb-settings' ),
 	];
 	return $bulk_messages;
 }
@@ -656,21 +656,21 @@ function anemonedb_map_updated_messages( $messages ) {
 	$messages['map'] = [
 		0  => '', // Unused. Messages start at index 1.
 		/* translators: %s: post permalink */
-		1  => sprintf( __( 'Map updated. <a target="_blank" href="%s">View Map</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
-		2  => __( 'Custom field updated.', 'anemonedb-settings' ),
-		3  => __( 'Custom field deleted.', 'anemonedb-settings' ),
-		4  => __( 'Map updated.', 'anemonedb-settings' ),
+		1  => sprintf( __( 'Map updated. <a target="_blank" href="%s">View Map</a>', 'wp-anemonedb-settings' ), esc_url( $permalink ) ),
+		2  => __( 'Custom field updated.', 'wp-anemonedb-settings' ),
+		3  => __( 'Custom field deleted.', 'wp-anemonedb-settings' ),
+		4  => __( 'Map updated.', 'wp-anemonedb-settings' ),
 		/* translators: %s: date and time of the revision */
-		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Map restored to revision from %s', 'anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		5  => isset( $_GET['revision'] ) ? sprintf( __( 'Map restored to revision from %s', 'wp-anemonedb-settings' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false, // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		/* translators: %s: post permalink */
-		6  => sprintf( __( 'Map published. <a href="%s">View Map</a>', 'anemonedb-settings' ), esc_url( $permalink ) ),
-		7  => __( 'Map saved.', 'anemonedb-settings' ),
+		6  => sprintf( __( 'Map published. <a href="%s">View Map</a>', 'wp-anemonedb-settings' ), esc_url( $permalink ) ),
+		7  => __( 'Map saved.', 'wp-anemonedb-settings' ),
 		/* translators: %s: post permalink */
-		8  => sprintf( __( 'Map submitted. <a target="_blank" href="%s">Preview Map</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		8  => sprintf( __( 'Map submitted. <a target="_blank" href="%s">Preview Map</a>', 'wp-anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 		/* translators: 1: Publish box date format, see https://secure.php.net/date 2: Post permalink */
-		9  => sprintf( __( 'Map scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Map</a>', 'anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
+		9  => sprintf( __( 'Map scheduled for: <strong>%1$s</strong>. <a target="_blank" href="%2$s">Preview Map</a>', 'wp-anemonedb-settings' ), date_i18n( __( 'M j, Y @ G:i', 'wp-anemonedb-settings' ), strtotime( $post->post_date ) ), esc_url( $permalink ) ),
 		/* translators: %s: post permalink */
-		10 => sprintf( __( 'Map draft updated. <a target="_blank" href="%s">Preview Map</a>', 'anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
+		10 => sprintf( __( 'Map draft updated. <a target="_blank" href="%s">Preview Map</a>', 'wp-anemonedb-settings' ), esc_url( add_query_arg( 'preview', 'true', $permalink ) ) ),
 	];
 	return $messages;
 }
@@ -688,16 +688,16 @@ function anemonedb_map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
 	$bulk_messages['map'] = [
 		/* translators: %s: Number of Maps. */
-		'updated'   => _n( '%s Map updated.', '%s Maps updated.', $bulk_counts['updated'], 'anemonedb-settings' ),
-		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Map not updated, somebody is editing it.', 'anemonedb-settings' ) :
+		'updated'   => _n( '%s Map updated.', '%s Maps updated.', $bulk_counts['updated'], 'wp-anemonedb-settings' ),
+		'locked'    => ( 1 === $bulk_counts['locked'] ) ? __( '1 Map not updated, somebody is editing it.', 'wp-anemonedb-settings' ) :
 						/* translators: %s: Number of Maps. */
-						_n( '%s Map not updated, somebody is editing it.', '%s Maps not updated, somebody is editing them.', $bulk_counts['locked'], 'anemonedb-settings' ),
+						_n( '%s Map not updated, somebody is editing it.', '%s Maps not updated, somebody is editing them.', $bulk_counts['locked'], 'wp-anemonedb-settings' ),
 		/* translators: %s: Number of Maps. */
-		'deleted'   => _n( '%s Map permanently deleted.', '%s Maps permanently deleted.', $bulk_counts['deleted'], 'anemonedb-settings' ),
+		'deleted'   => _n( '%s Map permanently deleted.', '%s Maps permanently deleted.', $bulk_counts['deleted'], 'wp-anemonedb-settings' ),
 		/* translators: %s: Number of Maps. */
-		'trashed'   => _n( '%s Map moved to the Trash.', '%s Maps moved to the Trash.', $bulk_counts['trashed'], 'anemonedb-settings' ),
+		'trashed'   => _n( '%s Map moved to the Trash.', '%s Maps moved to the Trash.', $bulk_counts['trashed'], 'wp-anemonedb-settings' ),
 		/* translators: %s: Number of Maps. */
-		'untrashed' => _n( '%s Map restored from the Trash.', '%s Maps restored from the Trash.', $bulk_counts['untrashed'], 'anemonedb-settings' ),
+		'untrashed' => _n( '%s Map restored from the Trash.', '%s Maps restored from the Trash.', $bulk_counts['untrashed'], 'wp-anemonedb-settings' ),
 	];
 	return $bulk_messages;
 }
@@ -707,33 +707,33 @@ add_filter( 'bulk_post_updated_messages', 'anemonedb_map_bulk_updated_messages',
 function anemonedb_taxonomies_init() {
 	register_taxonomy( 'meshcode2', [ 'sample' ], [
 		'labels' => [
-			'name' => esc_html__( 'Meshcode2', 'anemonedb-settings' ),
-			'singular_name' => esc_html__( 'Meshcode2', 'anemonedb-settings' ),
-			'menu_name' => esc_html__( 'Meshcode2', 'anemonedb-settings' ),
-			'all_items' => esc_html__( 'All Meshcode2', 'anemonedb-settings' ),
-			'edit_item' => esc_html__( 'Edit Meshcode2', 'anemonedb-settings' ),
-			'view_item' => esc_html__( 'View Meshcode2', 'anemonedb-settings' ),
-			'update_item' => esc_html__( 'Update Meshcode2 name', 'anemonedb-settings' ),
-			'add_new_item' => esc_html__( 'Add new Meshcode2', 'anemonedb-settings' ),
-			'new_item_name' => esc_html__( 'New Meshcode2 name', 'anemonedb-settings' ),
-			'parent_item' => esc_html__( 'Parent Meshcode2', 'anemonedb-settings' ),
-			'parent_item_colon' => esc_html__( 'Parent Meshcode2:', 'anemonedb-settings' ),
-			'search_items' => esc_html__( 'Search Meshcode2', 'anemonedb-settings' ),
-			'popular_items' => esc_html__( 'Popular Meshcode2', 'anemonedb-settings' ),
-			'separate_items_with_commas' => esc_html__( 'Separate Meshcode2 with commas', 'anemonedb-settings' ),
-			'add_or_remove_items' => esc_html__( 'Add or remove Meshcode2', 'anemonedb-settings' ),
-			'choose_from_most_used' => esc_html__( 'Choose from the most used Meshcode2', 'anemonedb-settings' ),
-			'not_found' => esc_html__( 'No Meshcode2 found', 'anemonedb-settings' ),
-			'no_terms' => esc_html__( 'No Meshcode2', 'anemonedb-settings' ),
-			'items_list_navigation' => esc_html__( 'Meshcode2 list navigation', 'anemonedb-settings' ),
-			'items_list' => esc_html__( 'Meshcode2 list', 'anemonedb-settings' ),
-			'back_to_items' => esc_html__( 'Back to Meshcode2', 'anemonedb-settings' ),
-			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'anemonedb-settings' ),
-			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'anemonedb-settings' ),
-			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'anemonedb-settings' ),
-			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'anemonedb-settings' ),
+			'name' => esc_html__( 'Meshcode2', 'wp-anemonedb-settings' ),
+			'singular_name' => esc_html__( 'Meshcode2', 'wp-anemonedb-settings' ),
+			'menu_name' => esc_html__( 'Meshcode2', 'wp-anemonedb-settings' ),
+			'all_items' => esc_html__( 'All Meshcode2', 'wp-anemonedb-settings' ),
+			'edit_item' => esc_html__( 'Edit Meshcode2', 'wp-anemonedb-settings' ),
+			'view_item' => esc_html__( 'View Meshcode2', 'wp-anemonedb-settings' ),
+			'update_item' => esc_html__( 'Update Meshcode2 name', 'wp-anemonedb-settings' ),
+			'add_new_item' => esc_html__( 'Add new Meshcode2', 'wp-anemonedb-settings' ),
+			'new_item_name' => esc_html__( 'New Meshcode2 name', 'wp-anemonedb-settings' ),
+			'parent_item' => esc_html__( 'Parent Meshcode2', 'wp-anemonedb-settings' ),
+			'parent_item_colon' => esc_html__( 'Parent Meshcode2:', 'wp-anemonedb-settings' ),
+			'search_items' => esc_html__( 'Search Meshcode2', 'wp-anemonedb-settings' ),
+			'popular_items' => esc_html__( 'Popular Meshcode2', 'wp-anemonedb-settings' ),
+			'separate_items_with_commas' => esc_html__( 'Separate Meshcode2 with commas', 'wp-anemonedb-settings' ),
+			'add_or_remove_items' => esc_html__( 'Add or remove Meshcode2', 'wp-anemonedb-settings' ),
+			'choose_from_most_used' => esc_html__( 'Choose from the most used Meshcode2', 'wp-anemonedb-settings' ),
+			'not_found' => esc_html__( 'No Meshcode2 found', 'wp-anemonedb-settings' ),
+			'no_terms' => esc_html__( 'No Meshcode2', 'wp-anemonedb-settings' ),
+			'items_list_navigation' => esc_html__( 'Meshcode2 list navigation', 'wp-anemonedb-settings' ),
+			'items_list' => esc_html__( 'Meshcode2 list', 'wp-anemonedb-settings' ),
+			'back_to_items' => esc_html__( 'Back to Meshcode2', 'wp-anemonedb-settings' ),
+			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'wp-anemonedb-settings' ),
+			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'wp-anemonedb-settings' ),
+			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'wp-anemonedb-settings' ),
+			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'wp-anemonedb-settings' ),
 		],
-		'label' => esc_html__( 'Meshcode2', 'anemonedb-settings' ),
+		'label' => esc_html__( 'Meshcode2', 'wp-anemonedb-settings' ),
 		'public' => true,
 		'publicly_queryable' => true,
 		'hierarchical' => false,
@@ -754,33 +754,33 @@ function anemonedb_taxonomies_init() {
 	] );
 	register_taxonomy( 'project', [ 'sample' ], [
 		'labels' => [
-			'name' => esc_html__( 'Projects', 'anemonedb-settings' ),
-			'singular_name' => esc_html__( 'Project', 'anemonedb-settings' ),
-			'menu_name' => esc_html__( 'Projects', 'anemonedb-settings' ),
-			'all_items' => esc_html__( 'All Projects', 'anemonedb-settings' ),
-			'edit_item' => esc_html__( 'Edit Project', 'anemonedb-settings' ),
-			'view_item' => esc_html__( 'View Project', 'anemonedb-settings' ),
-			'update_item' => esc_html__( 'Update Project name', 'anemonedb-settings' ),
-			'add_new_item' => esc_html__( 'Add new Project', 'anemonedb-settings' ),
-			'new_item_name' => esc_html__( 'New Project name', 'anemonedb-settings' ),
-			'parent_item' => esc_html__( 'Parent Project', 'anemonedb-settings' ),
-			'parent_item_colon' => esc_html__( 'Parent Project:', 'anemonedb-settings' ),
-			'search_items' => esc_html__( 'Search Projects', 'anemonedb-settings' ),
-			'popular_items' => esc_html__( 'Popular Projects', 'anemonedb-settings' ),
-			'separate_items_with_commas' => esc_html__( 'Separate Projects with commas', 'anemonedb-settings' ),
-			'add_or_remove_items' => esc_html__( 'Add or remove Projects', 'anemonedb-settings' ),
-			'choose_from_most_used' => esc_html__( 'Choose from the most used Projects', 'anemonedb-settings' ),
-			'not_found' => esc_html__( 'No Projects found', 'anemonedb-settings' ),
-			'no_terms' => esc_html__( 'No Projects', 'anemonedb-settings' ),
-			'items_list_navigation' => esc_html__( 'Projects list navigation', 'anemonedb-settings' ),
-			'items_list' => esc_html__( 'Projects list', 'anemonedb-settings' ),
-			'back_to_items' => esc_html__( 'Back to Projects', 'anemonedb-settings' ),
-			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'anemonedb-settings' ),
-			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'anemonedb-settings' ),
-			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'anemonedb-settings' ),
-			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'anemonedb-settings' ),
+			'name' => esc_html__( 'Projects', 'wp-anemonedb-settings' ),
+			'singular_name' => esc_html__( 'Project', 'wp-anemonedb-settings' ),
+			'menu_name' => esc_html__( 'Projects', 'wp-anemonedb-settings' ),
+			'all_items' => esc_html__( 'All Projects', 'wp-anemonedb-settings' ),
+			'edit_item' => esc_html__( 'Edit Project', 'wp-anemonedb-settings' ),
+			'view_item' => esc_html__( 'View Project', 'wp-anemonedb-settings' ),
+			'update_item' => esc_html__( 'Update Project name', 'wp-anemonedb-settings' ),
+			'add_new_item' => esc_html__( 'Add new Project', 'wp-anemonedb-settings' ),
+			'new_item_name' => esc_html__( 'New Project name', 'wp-anemonedb-settings' ),
+			'parent_item' => esc_html__( 'Parent Project', 'wp-anemonedb-settings' ),
+			'parent_item_colon' => esc_html__( 'Parent Project:', 'wp-anemonedb-settings' ),
+			'search_items' => esc_html__( 'Search Projects', 'wp-anemonedb-settings' ),
+			'popular_items' => esc_html__( 'Popular Projects', 'wp-anemonedb-settings' ),
+			'separate_items_with_commas' => esc_html__( 'Separate Projects with commas', 'wp-anemonedb-settings' ),
+			'add_or_remove_items' => esc_html__( 'Add or remove Projects', 'wp-anemonedb-settings' ),
+			'choose_from_most_used' => esc_html__( 'Choose from the most used Projects', 'wp-anemonedb-settings' ),
+			'not_found' => esc_html__( 'No Projects found', 'wp-anemonedb-settings' ),
+			'no_terms' => esc_html__( 'No Projects', 'wp-anemonedb-settings' ),
+			'items_list_navigation' => esc_html__( 'Projects list navigation', 'wp-anemonedb-settings' ),
+			'items_list' => esc_html__( 'Projects list', 'wp-anemonedb-settings' ),
+			'back_to_items' => esc_html__( 'Back to Projects', 'wp-anemonedb-settings' ),
+			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'wp-anemonedb-settings' ),
+			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'wp-anemonedb-settings' ),
+			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'wp-anemonedb-settings' ),
+			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'wp-anemonedb-settings' ),
 		],
-		'label' => esc_html__( 'Projects', 'anemonedb-settings' ),
+		'label' => esc_html__( 'Projects', 'wp-anemonedb-settings' ),
 		'public' => true,
 		'publicly_queryable' => true,
 		'hierarchical' => true,
@@ -801,33 +801,33 @@ function anemonedb_taxonomies_init() {
 	] );
 	register_taxonomy( 'taxon', [ 'sample' ], [
 		'labels' => [
-			'name' => esc_html__( 'Taxa', 'anemonedb-settings' ),
-			'singular_name' => esc_html__( 'Taxon', 'anemonedb-settings' ),
-			'menu_name' => esc_html__( 'Taxa', 'anemonedb-settings' ),
-			'all_items' => esc_html__( 'All Taxa', 'anemonedb-settings' ),
-			'edit_item' => esc_html__( 'Edit Taxon', 'anemonedb-settings' ),
-			'view_item' => esc_html__( 'View Taxon', 'anemonedb-settings' ),
-			'update_item' => esc_html__( 'Update Taxon name', 'anemonedb-settings' ),
-			'add_new_item' => esc_html__( 'Add new Taxon', 'anemonedb-settings' ),
-			'new_item_name' => esc_html__( 'New Taxon name', 'anemonedb-settings' ),
-			'parent_item' => esc_html__( 'Parent Taxon', 'anemonedb-settings' ),
-			'parent_item_colon' => esc_html__( 'Parent Taxon:', 'anemonedb-settings' ),
-			'search_items' => esc_html__( 'Search Taxa', 'anemonedb-settings' ),
-			'popular_items' => esc_html__( 'Popular Taxa', 'anemonedb-settings' ),
-			'separate_items_with_commas' => esc_html__( 'Separate Taxa with commas', 'anemonedb-settings' ),
-			'add_or_remove_items' => esc_html__( 'Add or remove Taxa', 'anemonedb-settings' ),
-			'choose_from_most_used' => esc_html__( 'Choose from the most used Taxa', 'anemonedb-settings' ),
-			'not_found' => esc_html__( 'No Taxa found', 'anemonedb-settings' ),
-			'no_terms' => esc_html__( 'No Taxa', 'anemonedb-settings' ),
-			'items_list_navigation' => esc_html__( 'Taxa list navigation', 'anemonedb-settings' ),
-			'items_list' => esc_html__( 'Taxa list', 'anemonedb-settings' ),
-			'back_to_items' => esc_html__( 'Back to Taxa', 'anemonedb-settings' ),
-			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'anemonedb-settings' ),
-			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'anemonedb-settings' ),
-			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'anemonedb-settings' ),
-			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'anemonedb-settings' ),
+			'name' => esc_html__( 'Taxa', 'wp-anemonedb-settings' ),
+			'singular_name' => esc_html__( 'Taxon', 'wp-anemonedb-settings' ),
+			'menu_name' => esc_html__( 'Taxa', 'wp-anemonedb-settings' ),
+			'all_items' => esc_html__( 'All Taxa', 'wp-anemonedb-settings' ),
+			'edit_item' => esc_html__( 'Edit Taxon', 'wp-anemonedb-settings' ),
+			'view_item' => esc_html__( 'View Taxon', 'wp-anemonedb-settings' ),
+			'update_item' => esc_html__( 'Update Taxon name', 'wp-anemonedb-settings' ),
+			'add_new_item' => esc_html__( 'Add new Taxon', 'wp-anemonedb-settings' ),
+			'new_item_name' => esc_html__( 'New Taxon name', 'wp-anemonedb-settings' ),
+			'parent_item' => esc_html__( 'Parent Taxon', 'wp-anemonedb-settings' ),
+			'parent_item_colon' => esc_html__( 'Parent Taxon:', 'wp-anemonedb-settings' ),
+			'search_items' => esc_html__( 'Search Taxa', 'wp-anemonedb-settings' ),
+			'popular_items' => esc_html__( 'Popular Taxa', 'wp-anemonedb-settings' ),
+			'separate_items_with_commas' => esc_html__( 'Separate Taxa with commas', 'wp-anemonedb-settings' ),
+			'add_or_remove_items' => esc_html__( 'Add or remove Taxa', 'wp-anemonedb-settings' ),
+			'choose_from_most_used' => esc_html__( 'Choose from the most used Taxa', 'wp-anemonedb-settings' ),
+			'not_found' => esc_html__( 'No Taxa found', 'wp-anemonedb-settings' ),
+			'no_terms' => esc_html__( 'No Taxa', 'wp-anemonedb-settings' ),
+			'items_list_navigation' => esc_html__( 'Taxa list navigation', 'wp-anemonedb-settings' ),
+			'items_list' => esc_html__( 'Taxa list', 'wp-anemonedb-settings' ),
+			'back_to_items' => esc_html__( 'Back to Taxa', 'wp-anemonedb-settings' ),
+			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'wp-anemonedb-settings' ),
+			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'wp-anemonedb-settings' ),
+			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'wp-anemonedb-settings' ),
+			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'wp-anemonedb-settings' ),
 		],
-		'label' => esc_html__( 'Taxa', 'anemonedb-settings' ),
+		'label' => esc_html__( 'Taxa', 'wp-anemonedb-settings' ),
 		'public' => true,
 		'publicly_queryable' => true,
 		'hierarchical' => true,
@@ -848,33 +848,33 @@ function anemonedb_taxonomies_init() {
 	] );
 	register_taxonomy( 'yearmonth', [ 'sample' ], [
 		'labels' => [
-			'name' => esc_html__( 'YearMonths', 'anemonedb-settings' ),
-			'singular_name' => esc_html__( 'YearMonth', 'anemonedb-settings' ),
-			'menu_name' => esc_html__( 'YearMonths', 'anemonedb-settings' ),
-			'all_items' => esc_html__( 'All YearMonths', 'anemonedb-settings' ),
-			'edit_item' => esc_html__( 'Edit YearMonth', 'anemonedb-settings' ),
-			'view_item' => esc_html__( 'View YearMonth', 'anemonedb-settings' ),
-			'update_item' => esc_html__( 'Update YearMonth name', 'anemonedb-settings' ),
-			'add_new_item' => esc_html__( 'Add new YearMonth', 'anemonedb-settings' ),
-			'new_item_name' => esc_html__( 'New YearMonth name', 'anemonedb-settings' ),
-			'parent_item' => esc_html__( 'Parent YearMonth', 'anemonedb-settings' ),
-			'parent_item_colon' => esc_html__( 'Parent YearMonth:', 'anemonedb-settings' ),
-			'search_items' => esc_html__( 'Search YearMonths', 'anemonedb-settings' ),
-			'popular_items' => esc_html__( 'Popular YearMonths', 'anemonedb-settings' ),
-			'separate_items_with_commas' => esc_html__( 'Separate YearMonths with commas', 'anemonedb-settings' ),
-			'add_or_remove_items' => esc_html__( 'Add or remove YearMonths', 'anemonedb-settings' ),
-			'choose_from_most_used' => esc_html__( 'Choose from the most used YearMonths', 'anemonedb-settings' ),
-			'not_found' => esc_html__( 'No YearMonths found', 'anemonedb-settings' ),
-			'no_terms' => esc_html__( 'No YearMonths', 'anemonedb-settings' ),
-			'items_list_navigation' => esc_html__( 'YearMonths list navigation', 'anemonedb-settings' ),
-			'items_list' => esc_html__( 'YearMonths list', 'anemonedb-settings' ),
-			'back_to_items' => esc_html__( 'Back to YearMonths', 'anemonedb-settings' ),
-			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'anemonedb-settings' ),
-			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'anemonedb-settings' ),
-			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'anemonedb-settings' ),
-			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'anemonedb-settings' ),
+			'name' => esc_html__( 'YearMonths', 'wp-anemonedb-settings' ),
+			'singular_name' => esc_html__( 'YearMonth', 'wp-anemonedb-settings' ),
+			'menu_name' => esc_html__( 'YearMonths', 'wp-anemonedb-settings' ),
+			'all_items' => esc_html__( 'All YearMonths', 'wp-anemonedb-settings' ),
+			'edit_item' => esc_html__( 'Edit YearMonth', 'wp-anemonedb-settings' ),
+			'view_item' => esc_html__( 'View YearMonth', 'wp-anemonedb-settings' ),
+			'update_item' => esc_html__( 'Update YearMonth name', 'wp-anemonedb-settings' ),
+			'add_new_item' => esc_html__( 'Add new YearMonth', 'wp-anemonedb-settings' ),
+			'new_item_name' => esc_html__( 'New YearMonth name', 'wp-anemonedb-settings' ),
+			'parent_item' => esc_html__( 'Parent YearMonth', 'wp-anemonedb-settings' ),
+			'parent_item_colon' => esc_html__( 'Parent YearMonth:', 'wp-anemonedb-settings' ),
+			'search_items' => esc_html__( 'Search YearMonths', 'wp-anemonedb-settings' ),
+			'popular_items' => esc_html__( 'Popular YearMonths', 'wp-anemonedb-settings' ),
+			'separate_items_with_commas' => esc_html__( 'Separate YearMonths with commas', 'wp-anemonedb-settings' ),
+			'add_or_remove_items' => esc_html__( 'Add or remove YearMonths', 'wp-anemonedb-settings' ),
+			'choose_from_most_used' => esc_html__( 'Choose from the most used YearMonths', 'wp-anemonedb-settings' ),
+			'not_found' => esc_html__( 'No YearMonths found', 'wp-anemonedb-settings' ),
+			'no_terms' => esc_html__( 'No YearMonths', 'wp-anemonedb-settings' ),
+			'items_list_navigation' => esc_html__( 'YearMonths list navigation', 'wp-anemonedb-settings' ),
+			'items_list' => esc_html__( 'YearMonths list', 'wp-anemonedb-settings' ),
+			'back_to_items' => esc_html__( 'Back to YearMonths', 'wp-anemonedb-settings' ),
+			'name_field_description' => esc_html__( 'The name is how it appears on your site.', 'wp-anemonedb-settings' ),
+			'parent_field_description' => esc_html__( 'Assign a parent term to create a hierarchy. The term Jazz, for example, would be the parent of Bebop and Big Band.', 'wp-anemonedb-settings' ),
+			'slug_field_description' => esc_html__( 'The slug is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.', 'wp-anemonedb-settings' ),
+			'desc_field_description' => esc_html__( 'The description is not prominent by default; however, some themes may show it.', 'wp-anemonedb-settings' ),
 		],
-		'label' => esc_html__( 'YearMonths', 'anemonedb-settings' ),
+		'label' => esc_html__( 'YearMonths', 'wp-anemonedb-settings' ),
 		'public' => true,
 		'publicly_queryable' => true,
 		'hierarchical' => true,
@@ -905,12 +905,12 @@ add_action('init', 'anemonedb_taxonomies_init');
 function anemonedb_meshcode2_updated_messages( $messages ) {
 	$messages['meshcode2'] = [
 		0 => '', // Unused. Messages start at index 1.
-		1 => __( 'Meshcode2 added.', 'anemonedb-settings' ),
-		2 => __( 'Meshcode2 deleted.', 'anemonedb-settings' ),
-		3 => __( 'Meshcode2 updated.', 'anemonedb-settings' ),
-		4 => __( 'Meshcode2 not added.', 'anemonedb-settings' ),
-		5 => __( 'Meshcode2 not updated.', 'anemonedb-settings' ),
-		6 => __( 'Meshcode2 deleted.', 'anemonedb-settings' ),
+		1 => __( 'Meshcode2 added.', 'wp-anemonedb-settings' ),
+		2 => __( 'Meshcode2 deleted.', 'wp-anemonedb-settings' ),
+		3 => __( 'Meshcode2 updated.', 'wp-anemonedb-settings' ),
+		4 => __( 'Meshcode2 not added.', 'wp-anemonedb-settings' ),
+		5 => __( 'Meshcode2 not updated.', 'wp-anemonedb-settings' ),
+		6 => __( 'Meshcode2 deleted.', 'wp-anemonedb-settings' ),
 	];
 	return $messages;
 }
@@ -925,12 +925,12 @@ add_filter( 'term_updated_messages', 'anemonedb_meshcode2_updated_messages' );
 function anemonedb_project_updated_messages( $messages ) {
 	$messages['project'] = [
 		0 => '', // Unused. Messages start at index 1.
-		1 => __( 'Project added.', 'anemonedb-settings' ),
-		2 => __( 'Project deleted.', 'anemonedb-settings' ),
-		3 => __( 'Project updated.', 'anemonedb-settings' ),
-		4 => __( 'Project not added.', 'anemonedb-settings' ),
-		5 => __( 'Project not updated.', 'anemonedb-settings' ),
-		6 => __( 'Projects deleted.', 'anemonedb-settings' ),
+		1 => __( 'Project added.', 'wp-anemonedb-settings' ),
+		2 => __( 'Project deleted.', 'wp-anemonedb-settings' ),
+		3 => __( 'Project updated.', 'wp-anemonedb-settings' ),
+		4 => __( 'Project not added.', 'wp-anemonedb-settings' ),
+		5 => __( 'Project not updated.', 'wp-anemonedb-settings' ),
+		6 => __( 'Projects deleted.', 'wp-anemonedb-settings' ),
 	];
 	return $messages;
 }
@@ -945,12 +945,12 @@ add_filter( 'term_updated_messages', 'anemonedb_project_updated_messages' );
 function anemonedb_taxon_updated_messages( $messages ) {
 	$messages['taxon'] = [
 		0 => '', // Unused. Messages start at index 1.
-		1 => __( 'Taxon added.', 'anemonedb-settings' ),
-		2 => __( 'Taxon deleted.', 'anemonedb-settings' ),
-		3 => __( 'Taxon updated.', 'anemonedb-settings' ),
-		4 => __( 'Taxon not added.', 'anemonedb-settings' ),
-		5 => __( 'Taxon not updated.', 'anemonedb-settings' ),
-		6 => __( 'Taxa deleted.', 'anemonedb-settings' ),
+		1 => __( 'Taxon added.', 'wp-anemonedb-settings' ),
+		2 => __( 'Taxon deleted.', 'wp-anemonedb-settings' ),
+		3 => __( 'Taxon updated.', 'wp-anemonedb-settings' ),
+		4 => __( 'Taxon not added.', 'wp-anemonedb-settings' ),
+		5 => __( 'Taxon not updated.', 'wp-anemonedb-settings' ),
+		6 => __( 'Taxa deleted.', 'wp-anemonedb-settings' ),
 	];
 	return $messages;
 }
@@ -965,12 +965,12 @@ add_filter( 'term_updated_messages', 'anemonedb_taxon_updated_messages' );
 function anemonedb_yearmonth_updated_messages( $messages ) {
 	$messages['yearmonth'] = [
 		0 => '', // Unused. Messages start at index 1.
-		1 => __( 'YearMonth added.', 'anemonedb-settings' ),
-		2 => __( 'YearMonth deleted.', 'anemonedb-settings' ),
-		3 => __( 'YearMonth updated.', 'anemonedb-settings' ),
-		4 => __( 'YearMonth not added.', 'anemonedb-settings' ),
-		5 => __( 'YearMonth not updated.', 'anemonedb-settings' ),
-		6 => __( 'YearMonths deleted.', 'anemonedb-settings' ),
+		1 => __( 'YearMonth added.', 'wp-anemonedb-settings' ),
+		2 => __( 'YearMonth deleted.', 'wp-anemonedb-settings' ),
+		3 => __( 'YearMonth updated.', 'wp-anemonedb-settings' ),
+		4 => __( 'YearMonth not added.', 'wp-anemonedb-settings' ),
+		5 => __( 'YearMonth not updated.', 'wp-anemonedb-settings' ),
+		6 => __( 'YearMonths deleted.', 'wp-anemonedb-settings' ),
 	];
 	return $messages;
 }
