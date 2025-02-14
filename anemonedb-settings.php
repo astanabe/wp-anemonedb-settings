@@ -41,19 +41,15 @@ function anemonedb_settings_deactivate() {
 }
 register_deactivation_hook(__FILE__, 'anemonedb_settings_deactivate');
 
-// Function to display admin notices
-function anemonedb_admin_notices_callback() {
-	if (!empty($GLOBALS['anemonedb_admin_notices'])) {
-		foreach ($GLOBALS['anemonedb_admin_notices'] as $notice) {
-			echo '<div class="notice notice-error"><p><strong>ANEMONE DB Settings Plugin Error:</strong> ' . wp_kses_post($notice) . '</p></div>';
-		}
-	}
-}
-add_action('admin_notices', 'anemonedb_admin_notices_callback');
-
-// Function to add admin notices
-function anemonedb_add_admin_notices($message) {
-	$GLOBALS['anemonedb_admin_notices'][] = $message;
+// Function to display admin notice
+function anemonedb_display_admin_notice($message, $type = 'success') {
+    wp_admin_notice(
+        $message,
+        array(
+            'type'    => $type, // 'success', 'error', 'warning', 'info'
+            'dismiss' => true,
+        )
+    );
 }
 
 // Check login failure log file
@@ -61,13 +57,13 @@ function anemonedb_check_login_failure_log() {
 	$authlog = "/var/log/wp_auth_failure.log";
 	if (!file_exists($authlog)) {
 		if (!touch($authlog)) {
-			anemonedb_add_admin_notices("Failed to create log file {$authlog}. Please create this file and ensure the correct permissions are set.");
+			anemonedb_display_admin_notice("Failed to create log file {$authlog}. Please create this file and ensure the correct permissions are set.", 'error');
 			return;
 		}
 		chmod($authlog, 0644);
 	}
 	if (!is_writable($authlog)) {
-		anemonedb_add_admin_notices("Log file {$authlog} is not writable. Please set the correct permissions (e.g., 644).");
+		anemonedb_display_admin_notice("Log file {$authlog} is not writable. Please set the correct permissions (e.g., 644).", 'error');
 		return;
 	}
 }
@@ -447,7 +443,7 @@ add_action('bp_template_content', 'anemonedb_save_dd_pass', 1);
 // Schedule data download password cleanup
 function anemonedb_schedule_dd_pass_cleanup() {
 	if (!wp_next_scheduled('anemonedb_dd_pass_cleanup')) {
-		wp_schedule_event(time(), 'hourly', 'anemonedb_dd_pass_cleanup');
+		wp_schedule_event(time(), 'anemonedb_every_ten_minutes', 'anemonedb_dd_pass_cleanup');
 	}
 }
 add_action('wp', 'anemonedb_schedule_dd_pass_cleanup');
@@ -1199,12 +1195,12 @@ function anemonedb_delete_email_tables() {
 	$table_recipients = $wpdb->prefix . 'anemonedb_email_recipients';
 	$content_exists = $wpdb->get_var("SELECT COUNT(*) FROM $table_content");
 	$recipients_exists = $wpdb->get_var("SELECT COUNT(*) FROM $table_recipients");
-	$cron_exists = wp_next_scheduled('anemonedb_send_email_cron');
+	$cron_exists = wp_next_scheduled('anemonedb_email_send');
 	if ($content_exists > 0 || $recipients_exists > 0 || $cron_exists) {
 		deactivate_plugins(plugin_basename(__FILE__));
 		wp_die('<p>There are pending email jobs. Please cancel them before deactivating the plugin.</p><p><a href="' . esc_url(admin_url('admin.php?page=anemonedb-send-email')) . '">Go to Email Management</a></p>', 'Plugin Deactivation Error', array('back_link' => true));
 	}
-	wp_clear_scheduled_hook('anemonedb_send_email_cron');
+	wp_clear_scheduled_hook('anemonedb_email_send');
 	$wpdb->query("DROP TABLE IF EXISTS $table_content");
 	$wpdb->query("DROP TABLE IF EXISTS $table_recipients");
 }
@@ -1230,6 +1226,7 @@ function anemonedb_send_email_page_screen() {
 	$is_paused = $current_job && ($current_job->status === 'paused');
 	echo '<div class="wrap"><h1>Send Email to Roles</h1>';
 	if ($is_sending) {
+		echo '<h2>Sending Emails...</h2>';
 		echo '<p>Email is currently being sent. You can pause the sending process.</p>';
 		echo '<form method="post">';
 		wp_nonce_field('anemonedb_pause_send_email', 'anemonedb_pause_send_email_nonce');
@@ -1237,6 +1234,7 @@ function anemonedb_send_email_page_screen() {
 		echo '<p><input type="submit" class="button button-warning" value="Pause Sending"></p></form>';
 	}
 	else if ($is_paused) {
+		echo '<h2>Pausing Sending Emails...</h2>';
 		echo '<p>Email sending is paused. You can resume or cancel the process.</p>';
 		echo '<form method="post">';
 		wp_nonce_field('anemonedb_resume_send_email', 'anemonedb_resume_send_email_nonce');
@@ -1258,19 +1256,22 @@ function anemonedb_send_email_page_screen() {
 					$roles[] = $role_key;
 				}
 				else {
-					anemonedb_add_admin_notices('Recipient role "' . $role_key . '" is invalid.');
-					return;
+					anemonedb_display_admin_notice('Recipient role "' . $role_key . '" is invalid.', 'error');
+					wp_redirect(wp_get_referer());
+					exit;
 				}
 			}
-			$unlogged_only = isset($_POST['email_unlogged_only']);
+			$unlogged_only = !empty($_POST['email_unlogged_only']);
 			$batch_size = sanitize_text_field($_POST['email_batch_size']);
 			if (empty($subject) || empty($body) || empty($roles) || empty($batch_size)) {
-				anemonedb_add_admin_notices('Email subject, body, recipient roles and batch size are required.');
-				return;
+				anemonedb_display_admin_notice('Email subject, body, recipient roles and batch size are required.', 'error');
+				wp_redirect(wp_get_referer());
+				exit;
 			}
 			if ($batch_size < 10 || $batch_size > 10000) {
-				anemonedb_add_admin_notices('Batch size "' . $batch_size . '" is invalid.');
-				return;
+				anemonedb_display_admin_notice('Batch size "' . $batch_size . '" is invalid.', 'error');
+				wp_redirect(wp_get_referer());
+				exit;
 			}
 			echo '<h2>Confirm Email</h2>';
 			echo '<p>Please review the email details before sending.</p>';
@@ -1283,7 +1284,7 @@ function anemonedb_send_email_page_screen() {
 				$role_names[] = esc_html($role_data['name']);
 			}
 			echo '<tr><th>Recipient Role(s):</th><td><strong>' . implode('</strong><br /><strong>', $role_names) . '</strong></td></tr>';
-			echo '<tr><th>Limit to users who never logged in:</th><td><strong>' . (isset($unlogged_only) ? 'Yes' : 'No') . '</strong></td></tr>
+			echo '<tr><th>Limit to users who never logged in:</th><td><strong>' . ($unlogged_only ? 'Yes' : 'No') . '</strong></td></tr>
 				<tr><th>Sending batch size every 10 min:</th><td><strong>' . esc_html($batch_size) . '</strong></td></tr>
 				</table>';
 			echo '<form method="post">';
@@ -1293,7 +1294,7 @@ function anemonedb_send_email_page_screen() {
 			foreach ($roles as $role_key) {
 				echo '<input type="hidden" name="email_recipient_roles[]" value="' . esc_attr($role_key) . '">';
 			}
-			echo '<input type="hidden" name="email_unlogged_only" value="' . (isset($unlogged_only) ? '1' : '') . '">';
+			echo '<input type="hidden" name="email_unlogged_only" value="' . ($unlogged_only ? '1' : '') . '">';
 			echo '<input type="hidden" name="email_batch_size" value="' . esc_attr($batch_size) . '">';
 			echo '<input type="hidden" name="anemonedb_perform_send_email" value="1">';
 			echo '<p><input type="submit" class="button button-primary" value="Send Email"></p></form>';
@@ -1304,14 +1305,12 @@ function anemonedb_send_email_page_screen() {
 			foreach ($roles as $role_key) {
 				echo '<input type="hidden" name="email_recipient_roles[]" value="' . esc_attr($role_key) . '">';
 			}
-			echo '<input type="hidden" name="email_unlogged_only" value="' . (isset($unlogged_only) ? '1' : '') . '">';
+			echo '<input type="hidden" name="email_unlogged_only" value="' . ($unlogged_only ? '1' : '') . '">';
 			echo '<input type="hidden" name="email_batch_size" value="' . esc_attr($batch_size) . '">';
 			echo '<input type="hidden" name="anemonedb_edit_send_email" value="1">';
 			echo '<p><input type="submit" class="button" value="Edit"></p></form>';
 		}
 		else {
-			echo '<h2>Input Email</h2>';
-			echo '<p>Input the email message sent to users.</p><p>The following variables can be used in email subject.</p><ul><li>{user_login}</li><li>{site_title}</li></ul><p>The following variables can be used in email body.</p><ul><li>{user_login}</li><li>{user_email}</li><li>{login_url}</li><li>{home_url}</li><li>{profile_url}</li><li>{site_title}</li><li>{resetpass_url}</li></ul>';
 			if (isset($_POST['anemonedb_edit_send_email']) && check_admin_referer('anemonedb_edit_send_email', 'anemonedb_edit_send_email_nonce')) {
 				$subject = sanitize_text_field($_POST['email_subject']);
 				$body = sanitize_textarea_field($_POST['email_body']);
@@ -1322,20 +1321,25 @@ function anemonedb_send_email_page_screen() {
 						$roles[] = $role_key;
 					}
 					else {
-						anemonedb_add_admin_notices('Recipient role "' . $role_key . '" is invalid.');
-						return;
+						anemonedb_display_admin_notice('Recipient role "' . $role_key . '" is invalid.', 'error');
+						wp_redirect(wp_get_referer());
+						exit;
 					}
 				}
-				$unlogged_only = isset($_POST['email_unlogged_only']);
+				$unlogged_only = !empty($_POST['email_unlogged_only']);
 				$batch_size = sanitize_text_field($_POST['email_batch_size']);
 				if (empty($subject) || empty($body) || empty($roles) || empty($batch_size)) {
-					anemonedb_add_admin_notices('Email subject, body, recipient roles and batch size are required.');
-					return;
+					anemonedb_display_admin_notice('Email subject, body, recipient roles and batch size are required.', 'error');
+					wp_redirect(wp_get_referer());
+					exit;
 				}
 				if ($batch_size < 10 || $batch_size > 10000) {
-					anemonedb_add_admin_notices('Batch size "' . $batch_size . '" is invalid.');
-					return;
+					anemonedb_display_admin_notice('Batch size "' . $batch_size . '" is invalid.', 'error');
+					wp_redirect(wp_get_referer());
+					exit;
 				}
+				echo '<h2>Edit Email</h2>';
+				echo '<p>Input the email message sent to users.</p><p>The following variables can be used in email subject.</p><ul><li>{user_login}</li><li>{site_title}</li></ul><p>The following variables can be used in email body.</p><ul><li>{user_login}</li><li>{user_email}</li><li>{login_url}</li><li>{home_url}</li><li>{profile_url}</li><li>{site_title}</li><li>{resetpass_url}</li></ul>';
 				echo '<form method="post">';
 				wp_nonce_field('anemonedb_confirm_send_email', 'anemonedb_confirm_send_email_nonce');
 				echo '<table class="form-table">
@@ -1354,12 +1358,7 @@ function anemonedb_send_email_page_screen() {
 					}
 				}
 				echo '</td></tr><tr><th><label for="email_unlogged_only">Limit to users who never logged in</label></th><td>';
-				if (isset($unlogged_only)) {
-					echo '<input type="checkbox" id="email_unlogged_only" name="email_unlogged_only" checked>';
-				}
-				else {
-					echo '<input type="checkbox" id="email_unlogged_only" name="email_unlogged_only">';
-				}
+				echo '<input type="checkbox" id="email_unlogged_only" name="email_unlogged_only"' . ($unlogged_only ? ' checked' : '') . '>';
 				echo '</td></tr>
 					<tr><th><label for="email_batch_size">Sending batch size every 10 min</label></th>
 					<td><select id="email_batch_size" name="email_batch_size">';
@@ -1378,6 +1377,8 @@ function anemonedb_send_email_page_screen() {
 				echo '<p><input type="submit" class="button button-primary" value="Confirm Email"></p></form>';
 			}
 			else {
+				echo '<h2>Input Email</h2>';
+				echo '<p>Input the email message sent to users.</p><p>The following variables can be used in email subject.</p><ul><li>{user_login}</li><li>{site_title}</li></ul><p>The following variables can be used in email body.</p><ul><li>{user_login}</li><li>{user_email}</li><li>{login_url}</li><li>{home_url}</li><li>{profile_url}</li><li>{site_title}</li><li>{resetpass_url}</li></ul>';
 				echo '<form method="post">';
 				wp_nonce_field('anemonedb_confirm_send_email', 'anemonedb_confirm_send_email_nonce');
 				echo '<table class="form-table">
@@ -1411,6 +1412,16 @@ function anemonedb_send_email_page_screen() {
 	echo '</div>';
 }
 
+// Add custom schedules
+function anemonedb_add_cron_schedules($schedules) {
+    $schedules['anemonedb_every_ten_minutes'] = array(
+        'interval' => 600, // = 10 minutes
+        'display'  => __('Every 10 Minutes')
+    );
+    return $schedules;
+}
+add_filter('cron_schedules', 'anemonedb_add_cron_schedules');
+
 // Button push handling
 function anemonedb_handle_email_controls() {
 	global $wpdb;
@@ -1418,20 +1429,20 @@ function anemonedb_handle_email_controls() {
 	$table_recipients = $wpdb->prefix . 'anemonedb_email_recipients';
 	if (isset($_POST['anemonedb_pause_send_email']) && check_admin_referer('anemonedb_pause_send_email', 'anemonedb_pause_send_email_nonce')) {
 		$wpdb->query("UPDATE $table_content SET status='paused' WHERE status='active'");
-		anemonedb_add_admin_notices('Email sending has been paused.');
+		anemonedb_display_admin_notice('Email sending has been paused.', 'success');
 	}
 	if (isset($_POST['anemonedb_resume_send_email']) && check_admin_referer('anemonedb_resume_send_email', 'anemonedb_resume_send_email_nonce')) {
 		$wpdb->query("UPDATE $table_content SET status='active' WHERE status='paused'");
-		anemonedb_add_admin_notices('Email sending has resumed.');
-		if (!wp_next_scheduled('anemonedb_send_email_cron')) {
-			wp_schedule_event(time(), 'ten_minutes', 'anemonedb_send_email_cron');
+		anemonedb_display_admin_notice('Email sending has resumed.', 'success');
+		if (!wp_next_scheduled('anemonedb_email_send')) {
+			wp_schedule_event(time(), 'anemonedb_every_ten_minutes', 'anemonedb_email_send');
 		}
 	}
 	if (isset($_POST['anemonedb_cancel_send_email']) && check_admin_referer('anemonedb_cancel_send_email', 'anemonedb_cancel_send_email_nonce')) {
 		$wpdb->query("DELETE FROM $table_content");
 		$wpdb->query("DELETE FROM $table_recipients");
-		wp_clear_scheduled_hook('anemonedb_send_email_cron');
-		anemonedb_add_admin_notices('Email sending has been completely canceled.');
+		wp_clear_scheduled_hook('anemonedb_email_send');
+		anemonedb_display_admin_notice('Email sending has been completely canceled.', 'success');
 	}
 }
 add_action('admin_init', 'anemonedb_handle_email_controls');
@@ -1453,18 +1464,18 @@ function anemonedb_perform_send_email() {
 			$roles[] = $role_key;
 		}
 		else {
-			anemonedb_add_admin_notices('Recipient role "' . $role_key . '" is invalid.');
+			anemonedb_display_admin_notice('Recipient role "' . $role_key . '" is invalid.', 'error');
 			return;
 		}
 	}
-	$unlogged_only = isset($_POST['email_unlogged_only']);
+	$unlogged_only = !empty($_POST['email_unlogged_only']);
 	$batch_size = sanitize_text_field($_POST['email_batch_size']);
 	if (empty($subject) || empty($body) || empty($roles) || empty($batch_size)) {
-		anemonedb_add_admin_notices('Email subject, body, recipient roles and batch size are required.');
+		anemonedb_display_admin_notice('Email subject, body, recipient roles and batch size are required.', 'error');
 		return;
 	}
 	if ($batch_size < 10 || $batch_size > 10000) {
-		anemonedb_add_admin_notices('Batch size "' . $batch_size . '" is invalid.');
+		anemonedb_display_admin_notice('Batch size "' . $batch_size . '" is invalid.', 'error');
 		return;
 	}
 	$wpdb->query("DELETE FROM $table_content");
@@ -1502,13 +1513,13 @@ function anemonedb_perform_send_email() {
 		$page++;
 	} while (count($users) >= 1000);
 	if ($total_users === 0) {
-		anemonedb_add_admin_notices('No users found to send email.');
+		anemonedb_display_admin_notice('No users found to send email.', 'error');
 		return;
 	}
-	if (!wp_next_scheduled('anemonedb_send_email_cron')) {
-		wp_schedule_event(time(), 'ten_minutes', 'anemonedb_send_email_cron');
+	if (!wp_next_scheduled('anemonedb_email_send')) {
+		wp_schedule_event(time(), 'anemonedb_every_ten_minutes', 'anemonedb_email_send');
 	}
-	anemonedb_add_admin_notices('Email sending started: <strong>' . esc_html($subject) . '</strong> to ' . esc_html($total_users) . ' users.');
+	anemonedb_display_admin_notice('Email sending started: <strong>' . esc_html($subject) . '</strong> to ' . esc_html($total_users) . ' users.', 'success');
 }
 add_action('admin_init', 'anemonedb_perform_send_email');
 
@@ -1518,23 +1529,23 @@ function anemonedb_send_email_cron() {
 	$table_content = $wpdb->prefix . 'anemonedb_email_content';
 	$table_recipients = $wpdb->prefix . 'anemonedb_email_recipients';
 	$current_job = $wpdb->get_row("SELECT * FROM $table_content LIMIT 1");
-	if (!$current_job || $current_job->status === 'paused') {
+	if (empty($current_job) || $current_job->status === 'paused') {
 		return;
 	}
 	$recipients = $wpdb->get_results("SELECT user_id FROM $table_recipients LIMIT $current_job->batch_size");
 	if (empty($recipients)) {
 		$wpdb->query("DELETE FROM $table_content");
-		wp_clear_scheduled_hook('anemonedb_send_email_cron');
+		wp_clear_scheduled_hook('anemonedb_email_send');
 		return;
 	}
 	$contains_resetpass_url = strpos($current_job->body, '{resetpass_url}') !== false;
-	$usleep_time = int((60 / $current_job->batch_size) * 1000000);
+	$usleep_time = (int) ((60 / $current_job->batch_size) * 1000000);
 	foreach ($recipients as $recipient) {
 		$user = get_userdata($recipient->user_id);
 		if ($user) {
 			$login_url = wp_login_url();
 			$home_url = home_url();
-			$profile_url = bp_members_get_user_url($user_id);
+			$profile_url = bp_members_get_user_url($recipient->user_id);
 			$site_title = get_bloginfo('name');
 			$subject = str_replace(
 				array('{user_login}', '{site_title}'),
@@ -1567,10 +1578,10 @@ function anemonedb_send_email_cron() {
 	$remaining_users = $wpdb->get_var("SELECT COUNT(*) FROM $table_recipients");
 	if ($remaining_users == 0) {
 		$wpdb->query("DELETE FROM $table_content");
-		wp_clear_scheduled_hook('anemonedb_send_email_cron');
+		wp_clear_scheduled_hook('anemonedb_email_send');
 	}
 }
-add_action('anemonedb_send_email_cron', 'anemonedb_send_email_cron');
+add_action('anemonedb_email_send', 'anemonedb_send_email_cron');
 
 // Get users
 function anemonedb_get_users_by_roles($roles, $unlogged_only, $batch_size = 1000, $page = 1) {
