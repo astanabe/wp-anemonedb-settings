@@ -1113,13 +1113,13 @@ function anemonedb_replace_welcome_email($user_id) {
 	$home_url = home_url();
 	$profile_url = bp_members_get_user_url($user_id);
 	$site_title = get_bloginfo('name');
-	$subject = get_option('anemonedb_welcome_email_subject', 'Welcome to our site!');
+	$subject = get_option('anemonedb_welcome_email_subject', '[{site_title}] Welcome {user_login}!');
 	$subject = str_replace(
 		array('{user_login}', '{site_title}'),
 		array($user->user_login, $site_title),
 		$subject
 	);
-	$body = get_option('anemonedb_welcome_email_body', "Hi {user_login},\n\nThank you for registering!\n\nRegards,\nSite Team");
+	$body = get_option('anemonedb_welcome_email_body', "Hi {user_login},\n\nThank you for registering!\n\nRegards,\n{site_title}");
 	$body = str_replace(
 		array('{user_login}', '{user_email}', '{login_url}', '{home_url}', '{profile_url}', '{site_title}'),
 		array($user->user_login, $user->user_email, $login_url, $home_url, $profile_url, $site_title),
@@ -1144,7 +1144,7 @@ function anemonedb_replace_reset_password_email_body($message, $key, $user_login
 		$login_url
 	);
 	$user_ip = anemonedb_get_client_ip();
-	$body = get_option('anemonedb_reset_password_email_body', "Hi {user_login},\n\nClick the link below to reset your password:\n{resetpass_url}\n\nRegards,\nSite Team");
+	$body = get_option('anemonedb_reset_password_email_body', "Hi {user_login},\n\nClick the link below to reset your password:\n{resetpass_url}\n\nRegards,\n{site_title}");
 	$body = str_replace(
 		array('{user_login}', '{user_email}', '{login_url}', '{home_url}', '{profile_url}', '{site_title}', '{resetpass_url}', '{user_ip}'),
 		array($user_login, $user_data->user_email, $login_url, $home_url, $profile_url, $site_title, $resetpass_url, $user_ip),
@@ -1157,13 +1157,13 @@ add_filter('retrieve_password_message', 'anemonedb_replace_reset_password_email_
 // Replace reset password email subject
 function anemonedb_replace_reset_password_email_subject($title, $user_login, $user_data) {
 	$site_title = get_bloginfo('name');
-	$subject = get_option('anemonedb_reset_password_email_subject', 'Reset your password');
+	$subject = get_option('anemonedb_reset_password_email_subject', '[{site_title}] Password Reset Requested');
 	$subject = str_replace(
 		array('{user_login}', '{site_title}'),
 		array($user_login, $site_title),
 		$subject
 	);
-	return get_option('anemonedb_reset_password_email_subject', 'Reset your password');
+	return $subject;
 }
 add_filter('retrieve_password_title', 'anemonedb_replace_reset_password_email_subject', 10, 3);
 
