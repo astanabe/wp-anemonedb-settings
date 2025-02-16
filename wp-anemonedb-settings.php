@@ -11,7 +11,7 @@
  * Domain Path:       /languages
  * Version:           0.1.0
  * Requires at least: 6.4
- * Requires Plugins:  buddypress, bp-classic, two-factor, tinymce-advanced, leaflet-map, extensions-leaflet-map, page-list
+ * Requires Plugins:  buddypress, bp-classic, two-factor, tinymce-advanced, leaflet-map, extensions-leaflet-map, page-list, wp-simple-contents-control, wp-simple-email-templates-editor, wp-simple-mass-email
  *
  * @package           WP_Anemonedb_Settings
  */
