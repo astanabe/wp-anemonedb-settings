@@ -543,7 +543,7 @@ function anemonedb_post_types_init() {
 			'map_meta_cap' => true,
 			'hierarchical' => true,
 			'can_export' => true,
-			'rewrite' => [ 'slug' => 'map', 'with_front' => false ],
+			'rewrite' => [ 'slug' => 'map', 'with_front' => false, 'hierarchical' => true ],
 			'query_var' => true,
 			'supports' => [ 'title', 'editor', 'thumbnail', 'page-attributes' ],
 			'show_in_graphql' => false,
@@ -755,7 +755,7 @@ function anemonedb_taxonomies_init() {
 		'show_in_menu' => true,
 		'show_in_nav_menus' => true,
 		'query_var' => true,
-		'rewrite' => [ 'slug' => 'project', 'with_front' => false,  'hierarchical' => true, ],
+		'rewrite' => [ 'slug' => 'project', 'with_front' => false, 'hierarchical' => true, ],
 		'show_admin_column' => false,
 		'show_in_rest' => true,
 		'show_tagcloud' => false,
@@ -979,8 +979,8 @@ function anemonedb_custom_post_type_rewrite_rules() {
 		'top'
 	);
 	add_rewrite_rule(
-		'map/(.+)/?$',
-		'index.php?post_type=map&name=$matches[1]',
+		'map/(.+)/([^/]+)/?$',
+		'index.php?post_type=map&name=$matches[2]',
 		'top'
 	);
 }
