@@ -103,14 +103,16 @@ function anemonedb_set_options() {
 	foreach ($widget_options as $option) {
 		$option_name = $option->option_name;
 		$widget_data = get_option($option_name);
-		if (is_array($widget_data)) {
-			foreach ($widget_data as $widget_id => $widget_instance) {
-				$widget_data[$widget_id]['wp_simple_widgets_control_visibility'] = 'logged-in';
-				unset($widget_data[$widget_id]['wp_simple_widgets_control_roles']);
-				unset($widget_data[$widget_id]['wp_simple_widgets_control_groups']);
-			}
-			update_option($option_name, $widget_data);
+		if ($widget_data === false || !is_array($widget_data)) continue;
+		$updated = false;
+		foreach ($widget_data as $widget_id => $widget_instance) {
+			if ($widget_id === '_multiwidget' || !is_array($widget_instance)) continue;
+			$widget_data[$widget_id]['wp_simple_widgets_control_visibility'] = 'logged-in';
+			unset($widget_data[$widget_id]['wp_simple_widgets_control_roles']);
+			unset($widget_data[$widget_id]['wp_simple_widgets_control_groups']);
+			$updated = true;
 		}
+		if ($updated) update_option($option_name, $widget_data);
 	}
 	// Update menu items visibility options
 	$menus = wp_get_nav_menus();
@@ -118,13 +120,11 @@ function anemonedb_set_options() {
 		$menu_items = wp_get_nav_menu_items($menu->term_id);
 		if (!$menu_items) continue;
 		foreach ($menu_items as $menu_item) {
-			$item_type = $menu_item->type;
-			$item_id = $menu_item->object_id;
-			if ($item_type === 'custom') continue;
-			if ($item_id == get_option('page_on_front')) continue;
-			update_post_meta($item_id, '_wp_simple_menuitems_control_visibility', 'logged-in');
-			delete_post_meta($item_id, '_wp_simple_menuitems_control_roles');
-			delete_post_meta($item_id, '_wp_simple_menuitems_control_groups');
+			if ($menu_item->type === 'custom') continue;
+			if ($menu_item->object_id == get_option('page_on_front')) continue;
+			update_post_meta($menu_item->ID, '_wp_simple_menuitems_control_visibility', 'logged-in');
+			delete_post_meta($menu_item->ID, '_wp_simple_menuitems_control_roles');
+			delete_post_meta($menu_item->ID, '_wp_simple_menuitems_control_groups');
 		}
 	}
 }
