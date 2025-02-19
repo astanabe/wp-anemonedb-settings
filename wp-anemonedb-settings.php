@@ -11,7 +11,7 @@
  * Domain Path:       /languages
  * Version:           0.1.0
  * Requires at least: 6.4
- * Requires Plugins:  buddypress, bp-classic, two-factor, leaflet-map, extensions-leaflet-map, page-list, wp-simple-contents-control
+ * Requires Plugins:  buddypress, bp-classic, two-factor, leaflet-map, extensions-leaflet-map, page-list, wp-simple-contents-control, wp-simple-email-templates-editor, wp-simple-menuitems-control, wp-simple-widgets-control
  *
  * @package           WP_Anemonedb_Settings
  */
@@ -105,7 +105,7 @@ function anemonedb_set_options() {
 		$widget_data = get_option($option_name);
 		if (is_array($widget_data)) {
 			foreach ($widget_data as $widget_id => $widget_instance) {
-				$widget_data[$widget_id]['wp_simple_widgets_control_visibility'] = ''logged-in'';
+				$widget_data[$widget_id]['wp_simple_widgets_control_visibility'] = 'logged-in';
 				unset($widget_data[$widget_id]['wp_simple_widgets_control_roles']);
 				unset($widget_data[$widget_id]['wp_simple_widgets_control_groups']);
 			}
