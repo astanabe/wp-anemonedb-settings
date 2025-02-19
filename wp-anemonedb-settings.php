@@ -25,6 +25,7 @@ if (!defined('ABSPATH')) {
 function anemonedb_settings_activate() {
 	anemonedb_check_login_failure_log();
 	anemonedb_change_frontpage_to_home();
+	anemonedb_set_options();
 	anemonedb_create_dd_users_table();
 	anemonedb_post_types_init();
 	anemonedb_taxonomies_init();
@@ -39,15 +40,104 @@ function anemonedb_settings_deactivate() {
 }
 register_deactivation_hook(__FILE__, 'anemonedb_settings_deactivate');
 
+// Function to set the options for ANEMONE DB
+function anemonedb_set_options() {
+	// Update General Settings
+	update_option('use_smilies', 0);
+	update_option('start_of_week', 1);
+	update_option('require_name_email', 1);
+	update_option('posts_per_page', 30);
+	update_option('date_format', 'Y-m-d');
+	update_option('time_format', 'H:i');
+	update_option('permalink_structure', '/%category%/%postname%/');
+	update_option('blog_charset', 'UTF-8');
+	update_option('comment_max_links', 20);
+	update_option('uploads_use_yearmonth_folders', 1);
+	update_option('show_avatars', 1);
+	update_option('avatar_rating', 'G');
+	update_option('avatar_default', 'retro');
+	update_option('thumbnail_size_w', 300);
+	update_option('thumbnail_size_h', 300);
+	update_option('thumbnail_crop', 1);
+	update_option('medium_size_w', 600);
+	update_option('medium_size_h', 600);
+	update_option('large_size_w', 1200);
+	update_option('large_size_h', 1200);
+	update_option('medium_large_size_w', 0);
+	update_option('medium_large_size_h', 0);
+	update_option('thread_comments', 1);
+	update_option('thread_comments_depth', 5);
+	update_option('default_comments_page', 50);
+	update_option('comment_order', 'asc');
+	update_option('auto_update_core_dev', 'enabled');
+	update_option('auto_update_core_minor', 'enabled');
+	update_option('auto_update_core_major', 'disabled');
+	update_option('leaflet_default_lat', 35);
+	update_option('leaflet_default_lng', 135);
+	update_option('leaflet_default_zoom', 5);
+	update_option('leaflet_default_height', 800);
+	update_option('leaflet_default_width', '100%');
+	update_option('leaflet_fit_markers', 0);
+	update_option('leaflet_show_zoom_controls', 1);
+	update_option('leaflet_scroll_wheel_zoom', 1);
+	update_option('leaflet_double_click_zoom', 1);
+	update_option('leaflet_default_min_zoom', 0);
+	update_option('leaflet_default_max_zoom', 12);
+	update_option('leaflet_default_tiling_service', 'other');
+	update_option('leaflet_map_tile_url', 'https://tile.openstreetmap.jp/styles/maptiler-toner-ja/{z}/{x}/{y}.png');
+	update_option('leaflet_detect_retina', 0);
+	update_option('leaflet_tile_no_wrap', 0);
+	update_option('leaflet_show_scale', 1);
+	update_option('leaflet_geocoder', 'osm');
+	update_option('leaflet_shortcode_in_excerpt', 0);
+	update_option('bp-disable-account-deletion', 1);
+	update_option('bp_restrict_group_creation', 1);
+	// Update email templates
+	update_option('wp_simple_email_templates_editor_welcome_email_subject', "[{site_title}] Welcome {user_login}");
+	update_option('wp_simple_email_templates_editor_welcome_email_body', "Japanese follows English.\n日本語版は英語版の下にあります。\n\nHello {user_login},\n\nThank you for registering to {site_title}.\nWe added your account to {site_title}.\nYour username of this site is \"{user_login}\" and your registered E-mail address is \"{user_email}\".\nPlease login using above username and configured password via the following URL.\n{login_url}\n\nNote that the two-factor authentication using Email is required for security reason.\nAfter logged-in, you can add authenticator app, FIDO security keys and recovery codes as secondary authentication methods, optionally.\n\nBest regards,\n\n{site_title}登録者の方へ\n\n{site_title}へのご登録ありがとうございます。\n{site_title}にあなたのアカウントを作成しました。\n上記サイトでのあなたのアカウントユーザー名は「{user_login}」です。\nまた、登録されているあなたのE-mailアドレスは「{user_email}」です。\n上記アカウント名と設定したパスワードを使用して下記URLからログインして下さい。\n{login_url}\n\nなお、Emailによる2要素認証が必須となっています。\nログイン後に認証アプリ、FIDOセキュリティキー、リカバリコードを第2認証方法として追加することが可能です。\n\nでは、よろしくお願いします。\n-- \n{site_title} admin team\n");
+	update_option('wp_simple_email_templates_editor_reset_password_email_subject', "[{site_title}] Password Reset Requested for {user_login}");
+	update_option('wp_simple_email_templates_editor_reset_password_email_body', "Japanese follows English.\n日本語版は英語版の下にあります。\n\nHello {user_login},\n\nSomeone requested that the password be reset for your account \"{user_login}\".\nIf this was a mistake, just ignore this email and nothing will happen.\nTo reset your password, visit the following address.\n{resetpass_url}\n\nThis password reset request originated from the IP address \"{user_ip}\".\n\nBest regards,\n\n{site_title}ユーザーの方へ\n\nあなたのアカウント「{user_login}」のパスワードリセット要求を受け付けました。\nもしパスワードリセット要求を誤って行ってしまったのであれば、単にこのメールを無視して下さい。\nパスワードをリセットするには、下記のURLにアクセスして下さい。\n{resetpass_url}\n\nこのパスワードリセット要求は、IPアドレス「{user_ip}」から受け付けました。\n\nでは、よろしくお願いします。\n-- \n{site_title} admin team\n");
+	// Update widget visibility options
+	global $wpdb;
+	$widget_options = $wpdb->get_results("SELECT option_name FROM {$wpdb->options} WHERE option_name LIKE 'widget_%'");
+	foreach ($widget_options as $option) {
+		$option_name = $option->option_name;
+		$widget_data = get_option($option_name);
+		if (is_array($widget_data)) {
+			foreach ($widget_data as $widget_id => $widget_instance) {
+				$widget_data[$widget_id]['wp_simple_widgets_control_visibility'] = ''logged-in'';
+				unset($widget_data[$widget_id]['wp_simple_widgets_control_roles']);
+				unset($widget_data[$widget_id]['wp_simple_widgets_control_groups']);
+			}
+			update_option($option_name, $widget_data);
+		}
+	}
+	// Update menu items visibility options
+	$menus = wp_get_nav_menus();
+	foreach ($menus as $menu) {
+		$menu_items = wp_get_nav_menu_items($menu->term_id);
+		if (!$menu_items) continue;
+		foreach ($menu_items as $menu_item) {
+			$item_type = $menu_item->type;
+			$item_id = $menu_item->object_id;
+			if ($item_type === 'custom') continue;
+			if ($item_id == get_option('page_on_front')) continue;
+			update_post_meta($item_id, '_wp_simple_menuitems_control_visibility', 'logged-in');
+			delete_post_meta($item_id, '_wp_simple_menuitems_control_roles');
+			delete_post_meta($item_id, '_wp_simple_menuitems_control_groups');
+		}
+	}
+}
+
 // Function to display admin notice
 function anemonedb_display_admin_notice($message, $type = 'success') {
-    wp_admin_notice(
-        $message,
-        [
-            'type'    => $type, // 'success', 'error', 'warning', 'info'
-            'dismiss' => true,
-        ]
-    );
+	wp_admin_notice(
+		$message,
+		[
+			'type'    => $type, // 'success', 'error', 'warning', 'info'
+			'dismiss' => true,
+		]
+	);
 }
 
 // Check login failure log file
@@ -173,10 +263,10 @@ add_action('admin_init', 'anemonedb_restrict_dashboard_access');
 
 // Disable "Login Details" email
 function anemonedb_disable_login_details_email($wp_new_user_notification_email, $user, $blogname) {
-    if (!is_admin()) {
-        $wp_new_user_notification_email['to'] = '';
-    }
-    return $wp_new_user_notification_email;
+	if (!is_admin()) {
+		$wp_new_user_notification_email['to'] = '';
+	}
+	return $wp_new_user_notification_email;
 }
 add_filter('wp_new_user_notification_email', 'anemonedb_disable_login_details_email', 10, 3);
 
