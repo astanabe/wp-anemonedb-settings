@@ -72,6 +72,7 @@ function anemonedb_set_options() {
 	update_option('auto_update_core_dev', 'enabled');
 	update_option('auto_update_core_minor', 'enabled');
 	update_option('auto_update_core_major', 'disabled');
+	// Update Leaflet Map options
 	update_option('leaflet_default_lat', 35);
 	update_option('leaflet_default_lng', 135);
 	update_option('leaflet_default_zoom', 5);
@@ -90,7 +91,17 @@ function anemonedb_set_options() {
 	update_option('leaflet_show_scale', 1);
 	update_option('leaflet_geocoder', 'osm');
 	update_option('leaflet_shortcode_in_excerpt', 0);
+	update_option('leaflet_css_url', plugins_url('assets/leaflet.css', __FILE__));
+	update_option('leaflet_js_url', plugins_url('assets/leaflet.js', __FILE__));
+	// Update BuddyPress options
 	update_option('bp-disable-account-deletion', 1);
+	update_option('bp-disable-avatar-uploads', 0);
+	update_option('bp-disable-cover-image-uploads', 0);
+	update_option('bp-disable-group-avatar-uploads', 1);
+	update_option('bp-disable-group-cover-image-uploads', 1);
+	update_option('bp-disable-profile-sync', 0);
+	update_option('bp-enable-members-invitations', 0);
+	update_option('bp-enable-membership-requests', 0);
 	update_option('bp_restrict_group_creation', 1);
 	// Update email templates
 	update_option('wp_simple_email_templates_editor_welcome_email_subject', "[{site_title}] Welcome {user_login}");
