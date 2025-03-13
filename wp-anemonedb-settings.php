@@ -11,7 +11,7 @@
  * Domain Path:       /languages
  * Version:           0.1.0
  * Requires at least: 6.4
- * Requires Plugins:  buddypress, bp-classic, two-factor, leaflet-map, extensions-leaflet-map, page-list, wp-simple-contents-control, wp-simple-email-templates-editor, wp-simple-menuitems-control, wp-simple-widgets-control
+ * Requires Plugins:  buddypress, bp-classic
  *
  * @package           WP_Anemonedb_Settings
  */
@@ -22,26 +22,19 @@ if (!defined('ABSPATH')) {
 }
 
 // Activation hook
-function anemonedb_settings_activate() {
-	anemonedb_check_login_failure_log();
-	anemonedb_change_frontpage_to_home();
-	anemonedb_set_options();
-	anemonedb_create_dd_users_table();
-	anemonedb_post_types_init();
-	anemonedb_taxonomies_init();
+function wp_anemonedb_settings_activate() {
+	wp_anemonedb_settings_check_login_failure_log();
+	wp_anemonedb_settings_change_frontpage_to_home();
+	wp_anemonedb_settings_set_options();
+	wp_anemonedb_settings_create_dd_users_table();
+	wp_anemonedb_settings_post_types_init();
+	wp_anemonedb_settings_taxonomies_init();
 	flush_rewrite_rules();
 }
-register_activation_hook(__FILE__, 'anemonedb_settings_activate');
-
-// Deactivation hook
-function anemonedb_settings_deactivate() {
-	anemonedb_delete_dd_users_table();
-	flush_rewrite_rules();
-}
-register_deactivation_hook(__FILE__, 'anemonedb_settings_deactivate');
+register_activation_hook(__FILE__, 'wp_anemonedb_settings_activate');
 
 // Function to set the options for ANEMONE DB
-function anemonedb_set_options() {
+function wp_anemonedb_settings_set_options() {
 	// Update General Settings
 	update_option('use_smilies', 0);
 	update_option('start_of_week', 1);
@@ -141,7 +134,7 @@ function anemonedb_set_options() {
 }
 
 // Function to display admin notice
-function anemonedb_display_admin_notice($message, $type = 'success') {
+function wp_anemonedb_settings_display_admin_notice($message, $type = 'success') {
 	wp_admin_notice(
 		$message,
 		[
@@ -152,33 +145,33 @@ function anemonedb_display_admin_notice($message, $type = 'success') {
 }
 
 // Check login failure log file
-function anemonedb_check_login_failure_log() {
+function wp_anemonedb_settings_check_login_failure_log() {
 	$authlog = "/var/log/wp_auth_failure.log";
 	if (!file_exists($authlog)) {
 		if (!touch($authlog)) {
-			anemonedb_display_admin_notice("Failed to create log file {$authlog}. Please create this file and ensure the correct permissions are set.", 'error');
+			wp_anemonedb_settings_display_admin_notice("Failed to create log file {$authlog}. Please create this file and ensure the correct permissions are set.", 'error');
 			return;
 		}
 		chmod($authlog, 0644);
 	}
 	if (!is_writable($authlog)) {
-		anemonedb_display_admin_notice("Log file {$authlog} is not writable. Please set the correct permissions (e.g., 644).", 'error');
+		wp_anemonedb_settings_display_admin_notice("Log file {$authlog} is not writable. Please set the correct permissions (e.g., 644).", 'error');
 		return;
 	}
 }
 
 // Change frontpage to "home"
-function anemonedb_change_frontpage_to_home() {
-	$page_id = anemonedb_create_page_if_not_exists('Home', 'home');
+function wp_anemonedb_settings_change_frontpage_to_home() {
+	$page_id = wp_anemonedb_settings_create_page_if_not_exists('Home', 'home');
 	if ($page_id) {
 		update_option('page_on_front', $page_id);
 		update_option('show_on_front', 'page');
 	}
-	anemonedb_create_page_if_not_exists('Loggedin Home', 'loggedin-home');
+	wp_anemonedb_settings_create_page_if_not_exists('Loggedin Home', 'loggedin-home');
 }
 
 // Create empty page if not exists and return page ID
-function anemonedb_create_page_if_not_exists($page_title, $page_slug) {
+function wp_anemonedb_settings_create_page_if_not_exists($page_title, $page_slug) {
 	$existing_page = get_page_by_path($page_slug);
 	if ($existing_page) {
 		return $existing_page->ID;
@@ -196,99 +189,99 @@ function anemonedb_create_page_if_not_exists($page_title, $page_slug) {
 }
 
 // Redirection after user activation
-function anemonedb_redirect_after_user_activation($user_id) {
+function wp_anemonedb_settings_redirect_after_user_activation($user_id) {
 	wp_safe_redirect(wp_login_url()); // redirect to login page
 	exit;
 }
-add_action('register_new_user', 'anemonedb_redirect_after_user_activation');
+add_action('register_new_user', 'wp_anemonedb_settings_redirect_after_user_activation');
 
 // Redirection after login
-function anemonedb_redirect_after_login($redirect_to, $requested_redirect_to, $user) {
+function wp_anemonedb_settings_redirect_after_login($redirect_to, $requested_redirect_to, $user) {
 	if (isset($user->roles) && is_array($user->roles)) {
 		return home_url(); // redirect to frontpage
 	}
 	return $redirect_to;
 }
-add_filter('login_redirect', 'anemonedb_redirect_after_login', 10, 3);
+add_filter('login_redirect', 'wp_anemonedb_settings_redirect_after_login', 10, 3);
 
 // Redirection after logout
-function anemonedb_redirect_after_logout() {
+function wp_anemonedb_settings_redirect_after_logout() {
 	wp_safe_redirect(home_url()); // redirect to home_url
 	exit;
 }
-add_action('wp_logout', 'anemonedb_redirect_after_logout');
+add_action('wp_logout', 'wp_anemonedb_settings_redirect_after_logout');
 
 // Override frontpage for loggedin users
-function anemonedb_override_frontpage_for_loggedin_users($content) {
+function wp_anemonedb_settings_override_frontpage_for_loggedin_users($content) {
 	if (is_front_page() && !is_admin() && is_user_logged_in()) {
 		$loggedin_home = get_page_by_path('loggedin-home');
 		if ($loggedin_home) {
-			remove_filter('the_content', 'anemonedb_override_frontpage_for_loggedin_users');
+			remove_filter('the_content', 'wp_anemonedb_settings_override_frontpage_for_loggedin_users');
 			$newcontent = apply_filters('the_content', $loggedin_home->post_content);
-			add_filter('the_content', 'anemonedb_override_frontpage_for_loggedin_users');
+			add_filter('the_content', 'wp_anemonedb_settings_override_frontpage_for_loggedin_users');
 			return $newcontent;
 		}
 	}
 	return $content;
 }
-add_filter('the_content', 'anemonedb_override_frontpage_for_loggedin_users');
+add_filter('the_content', 'wp_anemonedb_settings_override_frontpage_for_loggedin_users');
 
 // Check user's Name field length in registration
-function anemonedb_namelength_validation() {
+function wp_anemonedb_settings_namelength_validation() {
 	if ( strlen( $_POST['signup_username'] ) > 50 ) {
 		global $bp;
 		$bp->signup->errors['signup_username'] = __( 'ERROR!: Your Name is too long.', 'wp-anemonedb-settings' );
 	}
 }
-add_action( 'bp_signup_validate', 'anemonedb_namelength_validation' );
+add_action( 'bp_signup_validate', 'wp_anemonedb_settings_namelength_validation' );
 
 // Set user default role to subscriber
-function anemonedb_set_default_role( $user_id ) {
+function wp_anemonedb_settings_set_default_role( $user_id ) {
 	$user = new WP_User( $user_id );
 	$user->add_role( 'subscriber' );
 }
-add_action( 'bp_core_activated_user', 'anemonedb_set_default_role' );
+add_action( 'bp_core_activated_user', 'wp_anemonedb_settings_set_default_role' );
 
 // Disable send private message button
-function anemonedb_remove_send_message_button() {
+function wp_anemonedb_settings_remove_send_message_button() {
 	return false;
 }
-add_filter( 'bp_get_send_message_button_args', 'anemonedb_remove_send_message_button' );
+add_filter( 'bp_get_send_message_button_args', 'wp_anemonedb_settings_remove_send_message_button' );
 
 // Disable adminbar except for admins and editors
-function anemonedb_remove_admin_bar() {
+function wp_anemonedb_settings_remove_admin_bar() {
 	if (!current_user_can('edit_posts')) {
 		show_admin_bar(false);
 	}
 }
-add_action( 'after_setup_theme' , 'anemonedb_remove_admin_bar' );
+add_action( 'after_setup_theme' , 'wp_anemonedb_settings_remove_admin_bar' );
 
 // Disable dashboard except for admins and editors
-function anemonedb_restrict_dashboard_access() {
+function wp_anemonedb_settings_restrict_dashboard_access() {
 	if (is_admin() && !current_user_can('edit_posts') && !(defined('DOING_AJAX') && DOING_AJAX)) {
 		wp_safe_redirect(home_url());
 		exit;
 	}
 }
-add_action('admin_init', 'anemonedb_restrict_dashboard_access');
+add_action('admin_init', 'wp_anemonedb_settings_restrict_dashboard_access');
 
 // Disable "Login Details" email
-function anemonedb_disable_login_details_email($wp_new_user_notification_email, $user, $blogname) {
+function wp_anemonedb_settings_disable_login_details_email($wp_new_user_notification_email, $user, $blogname) {
 	if (!is_admin()) {
 		$wp_new_user_notification_email['to'] = '';
 	}
 	return $wp_new_user_notification_email;
 }
-add_filter('wp_new_user_notification_email', 'anemonedb_disable_login_details_email', 10, 3);
+add_filter('wp_new_user_notification_email', 'wp_anemonedb_settings_disable_login_details_email', 10, 3);
 
 // Disable login language menu
-function anemonedb_remove_login_language_menu() {
+function wp_anemonedb_settings_remove_login_language_menu() {
 	return false;
 }
-add_filter( 'login_display_language_dropdown', 'anemonedb_remove_login_language_menu' );
+add_filter( 'login_display_language_dropdown', 'wp_anemonedb_settings_remove_login_language_menu' );
 
 // Disable emoji
-function anemonedb_disable_emoji() {
+function wp_anemonedb_settings_disable_emoji() {
 	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
 	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
 	remove_action( 'wp_print_styles', 'print_emoji_styles' );
@@ -297,10 +290,10 @@ function anemonedb_disable_emoji() {
 	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
 	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
 }
-add_action( 'init', 'anemonedb_disable_emoji' );
+add_action( 'init', 'wp_anemonedb_settings_disable_emoji' );
 
 // Function to obtain client IP
-function anemonedb_get_client_ip() {
+function wp_anemonedb_settings_get_client_ip() {
 	if (!empty($_SERVER['CF-Connecting-IP']) && filter_var($_SERVER['CF-Connecting-IP'], FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
 		return sanitize_text_field($_SERVER['CF-Connecting-IP']);
 	}
@@ -320,9 +313,9 @@ function anemonedb_get_client_ip() {
 }
 
 // Login failure logging
-function anemonedb_login_failure_log($intruder) {
+function wp_anemonedb_settings_login_failure_log($intruder) {
 	$authlog = "/var/log/wp_auth_failure.log";
-	$msg = date('[Y-m-d H:i:s T]') . " login failure from " . anemonedb_get_client_ip() . " for $intruder\n";
+	$msg = date('[Y-m-d H:i:s T]') . " login failure from " . wp_anemonedb_settings_get_client_ip() . " for $intruder\n";
 	$log_append = fopen($authlog, "a");
 	if ($log_append) {
 		flock($log_append, LOCK_EX);
@@ -332,48 +325,48 @@ function anemonedb_login_failure_log($intruder) {
 		fclose($log_append);
 	}
 }
-add_action('wp_login_failed', 'anemonedb_login_failure_log');
+add_action('wp_login_failed', 'wp_anemonedb_settings_login_failure_log');
 
 // Enforce two-factor authentication
-function anemonedb_enforce_two_factor( $enabled, $user_id ) {
+function wp_anemonedb_settings_enforce_two_factor( $enabled, $user_id ) {
 	if ( count( $enabled ) ) {
 		return $enabled;
 	}
 	return [ 'Two_Factor_Email' ];
 }
-add_filter( 'two_factor_enabled_providers_for_user', 'anemonedb_enforce_two_factor', 10, 2 );
+add_filter( 'two_factor_enabled_providers_for_user', 'wp_anemonedb_settings_enforce_two_factor', 10, 2 );
 
 // Enforce plain text email
-function anemonedb_plain_text_email() {
+function wp_anemonedb_settings_plain_text_email() {
 	return 'text/plain';
 }
-add_filter( 'wp_mail_content_type', 'anemonedb_plain_text_email' );
+add_filter( 'wp_mail_content_type', 'wp_anemonedb_settings_plain_text_email' );
 
 // Disable "Export Data" page
-function anemonedb_remove_export_data() {
+function wp_anemonedb_settings_remove_export_data() {
 	return false;
 }
-add_filter( 'bp_settings_show_user_data_page', 'anemonedb_remove_export_data' );
+add_filter( 'bp_settings_show_user_data_page', 'wp_anemonedb_settings_remove_export_data' );
 
 // Disable "Profile Visibility" and "Email" pages
-function anemonedb_remove_subnav_item() {
+function wp_anemonedb_settings_remove_subnav_item() {
 	bp_core_remove_subnav_item( 'settings', 'profile' );
 	bp_core_remove_subnav_item( 'settings', 'notifications' );
 }
-add_action( 'bp_setup_nav', 'anemonedb_remove_subnav_item', 999 );
+add_action( 'bp_setup_nav', 'wp_anemonedb_settings_remove_subnav_item', 999 );
 
 // Disable adminbar submenu of "Profile Visibility" and "Email"
-function anemonedb_remove_submenu_from_adminbar_settings() {
+function wp_anemonedb_settings_remove_submenu_from_adminbar_settings() {
 	if (is_admin_bar_showing() && function_exists('buddypress')) {
 		global $wp_admin_bar;
 		$wp_admin_bar->remove_menu('my-account-settings-profile');
 		$wp_admin_bar->remove_menu('my-account-settings-notifications');
 	}
 }
-add_action('admin_bar_menu', 'anemonedb_remove_submenu_from_adminbar_settings', 999);
+add_action('admin_bar_menu', 'wp_anemonedb_settings_remove_submenu_from_adminbar_settings', 999);
 
 // Create table
-function anemonedb_create_dd_users_table() {
+function wp_anemonedb_settings_create_dd_users_table() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'anemonedb_dd_users';
 	$charset_collate = $wpdb->get_charset_collate();
@@ -388,28 +381,28 @@ function anemonedb_create_dd_users_table() {
 }
 
 // Delete table
-function anemonedb_delete_dd_users_table() {
+function wp_anemonedb_settings_delete_dd_users_table() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'anemonedb_dd_users';
 	$wpdb->query("DROP TABLE IF EXISTS $table_name");
 }
 
 // Add Data Download settings tab (subnav) to BuddyPress user settings
-function anemonedb_add_data_download() {
+function wp_anemonedb_settings_add_data_download() {
 	bp_core_new_subnav_item([
 		'name'            => 'Data Download',
 		'slug'            => 'data-download',
 		'parent_slug'     => 'settings',
 		'parent_url'      => trailingslashit(bp_loggedin_user_domain() . 'settings'),
-		'screen_function' => 'anemonedb_data_download_screen',
+		'screen_function' => 'wp_anemonedb_settings_data_download_screen',
 		'position'        => 50,
 		'user_has_access' => bp_is_my_profile(),
 	]);
 }
-add_action('bp_setup_nav', 'anemonedb_add_data_download', 10);
+add_action('bp_setup_nav', 'wp_anemonedb_settings_add_data_download', 10);
 
 // Add Data Download submenu to adminbar "Settings" menu
-function anemonedb_add_submenu_to_adminbar_settings() {
+function wp_anemonedb_settings_add_submenu_to_adminbar_settings() {
 	if (is_admin_bar_showing() && function_exists('buddypress')) {
 		global $wp_admin_bar;
 		$wp_admin_bar->add_menu([
@@ -420,16 +413,16 @@ function anemonedb_add_submenu_to_adminbar_settings() {
 		]);
 	}
 }
-add_action('wp_before_admin_bar_render', 'anemonedb_add_submenu_to_adminbar_settings', 999);
+add_action('wp_before_admin_bar_render', 'wp_anemonedb_settings_add_submenu_to_adminbar_settings', 999);
 
 // Screen function for Data Download settings page
-function anemonedb_data_download_screen() {
-	add_action('bp_template_content', 'anemonedb_display_dd_pass_section');
+function wp_anemonedb_settings_data_download_screen() {
+	add_action('bp_template_content', 'wp_anemonedb_settings_display_dd_pass_section');
 	bp_core_load_template('members/single/plugins');
 }
 
 // Display data download password section
-function anemonedb_display_dd_pass_section() {
+function wp_anemonedb_settings_display_dd_pass_section() {
 	if (!is_user_logged_in()) {
 		return;
 	}
@@ -443,25 +436,25 @@ function anemonedb_display_dd_pass_section() {
 		echo '<p class="info">Your data download password will be expired at ' . date('Y-m-d H:i T', $data->dd_pass_expiry) . '.</p>';
 		echo '<div class="info bp-feedback"><span class="bp-icon" aria-hidden="true"></span><p class="text">Click on the &quot;Regenerate Data Download Password&quot; button to regenerate and renew your temporary password for data download. This password is required to login to data file distribution area and is valid for 10 days. After 10 days, this password will be expired. <strong>The regenerated password will be shown only once.</strong> If you lost this password, you can regenerate password again and again.</p></div>';
 		echo '<form method="post" class="standard-form" id="your-profile">';
-		wp_nonce_field('anemonedb_generate_dd_pass', 'anemonedb_generate_dd_pass_nonce');
+		wp_nonce_field('wp_anemonedb_settings_generate_dd_pass', 'wp_anemonedb_settings_generate_dd_pass_nonce');
 		echo '<div class="wp-pwd"><button type="submit" name="generate_dd_pass" class="button">Regenerate Data Download Password</button></div>';
 		echo '</form>';
 	} else {
 		echo '<p class="info">Generate your temporary password for data download if you want to access to the data file distribution area.</p>';
 		echo '<div class="info bp-feedback"><span class="bp-icon" aria-hidden="true"></span><p class="text">Click on the &quot;Generate Data Download Password&quot; button to generate your temporary password for data download. This password is required to login to data file distribution area and is valid for 10 days. After 10 days, this password will be expired. <strong>The generated password will be shown only once.</strong> If you lost this password, you can regenerate password.</p></div>';
 		echo '<form method="post" class="standard-form" id="your-profile">';
-		wp_nonce_field('anemonedb_generate_dd_pass', 'anemonedb_generate_dd_pass_nonce');
+		wp_nonce_field('wp_anemonedb_settings_generate_dd_pass', 'wp_anemonedb_settings_generate_dd_pass_nonce');
 		echo '<div class="wp-pwd"><button type="submit" name="generate_dd_pass" class="button">Generate Data Download Password</button></div>';
 		echo '</form>';
 	}
 }
 
 // Generate and save data download password
-function anemonedb_save_dd_pass() {
+function wp_anemonedb_settings_save_dd_pass() {
 	if (!is_user_logged_in() || !isset($_POST['generate_dd_pass'])) {
 		return;
 	}
-	if (!isset($_POST['anemonedb_generate_dd_pass_nonce']) || !wp_verify_nonce($_POST['anemonedb_generate_dd_pass_nonce'], 'anemonedb_generate_dd_pass')) {
+	if (!isset($_POST['wp_anemonedb_settings_generate_dd_pass_nonce']) || !wp_verify_nonce($_POST['wp_anemonedb_settings_generate_dd_pass_nonce'], 'wp_anemonedb_settings_generate_dd_pass')) {
 		wp_die('Security check failed.');
 	}
 	global $wpdb;
@@ -506,27 +499,27 @@ function anemonedb_save_dd_pass() {
 		</script>';
 	}
 }
-add_action('bp_template_content', 'anemonedb_save_dd_pass', 1);
+add_action('bp_template_content', 'wp_anemonedb_settings_save_dd_pass', 1);
 
 // Schedule data download password cleanup
-function anemonedb_schedule_dd_pass_cleanup() {
-	if (!wp_next_scheduled('anemonedb_dd_pass_cleanup')) {
-		wp_schedule_event(time(), 'anemonedb_every_ten_minutes', 'anemonedb_dd_pass_cleanup');
+function wp_anemonedb_settings_schedule_dd_pass_cleanup() {
+	if (!wp_next_scheduled('wp_anemonedb_settings_dd_pass_cleanup')) {
+		wp_schedule_event(time(), 'hourly', 'wp_anemonedb_settings_dd_pass_cleanup');
 	}
 }
-add_action('wp', 'anemonedb_schedule_dd_pass_cleanup');
+add_action('wp', 'wp_anemonedb_settings_schedule_dd_pass_cleanup');
 
 // Cleanup expired data download password
-function anemonedb_cleanup_expired_dd_pass() {
+function wp_anemonedb_settings_cleanup_expired_dd_pass() {
 	global $wpdb;
 	$table_name = $wpdb->prefix . 'anemonedb_dd_users';
 	$current_time = time();
 	$wpdb->query($wpdb->prepare("DELETE FROM $table_name WHERE dd_pass_expiry <= %d", $current_time));
 }
-add_action('anemonedb_dd_pass_cleanup', 'anemonedb_cleanup_expired_dd_pass');
+add_action('wp_anemonedb_settings_dd_pass_cleanup', 'wp_anemonedb_settings_cleanup_expired_dd_pass');
 
 // Register custom post types
-function anemonedb_post_types_init() {
+function wp_anemonedb_settings_post_types_init() {
 	register_post_type(
 		'sample',
 		[
@@ -651,7 +644,7 @@ function anemonedb_post_types_init() {
 		]
 	);
 }
-add_action('init', 'anemonedb_post_types_init');
+add_action('init', 'wp_anemonedb_settings_post_types_init');
 
 /**
  * Sets the post updated messages for the `sample` post type.
@@ -659,7 +652,7 @@ add_action('init', 'anemonedb_post_types_init');
  * @param  array $messages Post updated messages.
  * @return array Messages for the `sample` post type.
  */
-function anemonedb_sample_updated_messages( $messages ) {
+function wp_anemonedb_settings_sample_updated_messages( $messages ) {
 	global $post;
 	$permalink = get_permalink( $post );
 	$messages['sample'] = [
@@ -683,7 +676,7 @@ function anemonedb_sample_updated_messages( $messages ) {
 	];
 	return $messages;
 }
-add_filter( 'post_updated_messages', 'anemonedb_sample_updated_messages' );
+add_filter( 'post_updated_messages', 'wp_anemonedb_settings_sample_updated_messages' );
 
 /**
  * Sets the bulk post updated messages for the `sample` post type.
@@ -693,7 +686,7 @@ add_filter( 'post_updated_messages', 'anemonedb_sample_updated_messages' );
  * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
  * @return array Bulk messages for the `sample` post type.
  */
-function anemonedb_sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+function wp_anemonedb_settings_sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
 	$bulk_messages['sample'] = [
 		/* translators: %s: Number of Samples. */
@@ -710,7 +703,7 @@ function anemonedb_sample_bulk_updated_messages( $bulk_messages, $bulk_counts ) 
 	];
 	return $bulk_messages;
 }
-add_filter( 'bulk_post_updated_messages', 'anemonedb_sample_bulk_updated_messages', 10, 2 );
+add_filter( 'bulk_post_updated_messages', 'wp_anemonedb_settings_sample_bulk_updated_messages', 10, 2 );
 
 /**
  * Sets the post updated messages for the `map` post type.
@@ -718,7 +711,7 @@ add_filter( 'bulk_post_updated_messages', 'anemonedb_sample_bulk_updated_message
  * @param  array $messages Post updated messages.
  * @return array Messages for the `map` post type.
  */
-function anemonedb_map_updated_messages( $messages ) {
+function wp_anemonedb_settings_map_updated_messages( $messages ) {
 	global $post;
 	$permalink = get_permalink( $post );
 	$messages['map'] = [
@@ -742,7 +735,7 @@ function anemonedb_map_updated_messages( $messages ) {
 	];
 	return $messages;
 }
-add_filter( 'post_updated_messages', 'anemonedb_map_updated_messages' );
+add_filter( 'post_updated_messages', 'wp_anemonedb_settings_map_updated_messages' );
 
 /**
  * Sets the bulk post updated messages for the `map` post type.
@@ -752,7 +745,7 @@ add_filter( 'post_updated_messages', 'anemonedb_map_updated_messages' );
  * @param  int[] $bulk_counts   Array of item counts for each message, used to build internationalized strings.
  * @return array Bulk messages for the `map` post type.
  */
-function anemonedb_map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
+function wp_anemonedb_settings_map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	global $post;
 	$bulk_messages['map'] = [
 		/* translators: %s: Number of Maps. */
@@ -769,10 +762,10 @@ function anemonedb_map_bulk_updated_messages( $bulk_messages, $bulk_counts ) {
 	];
 	return $bulk_messages;
 }
-add_filter( 'bulk_post_updated_messages', 'anemonedb_map_bulk_updated_messages', 10, 2 );
+add_filter( 'bulk_post_updated_messages', 'wp_anemonedb_settings_map_bulk_updated_messages', 10, 2 );
 
 // Register custom taxonomies
-function anemonedb_taxonomies_init() {
+function wp_anemonedb_settings_taxonomies_init() {
 	register_taxonomy( 'meshcode2', [ 'sample' ], [
 		'labels' => [
 			'name' => esc_html__( 'Meshcode2', 'wp-anemonedb-settings' ),
@@ -962,7 +955,7 @@ function anemonedb_taxonomies_init() {
 		'show_in_graphql' => false,
 	] );
 }
-add_action('init', 'anemonedb_taxonomies_init');
+add_action('init', 'wp_anemonedb_settings_taxonomies_init');
 
 /**
  * Sets the post updated messages for the `meshcode2` taxonomy.
@@ -970,7 +963,7 @@ add_action('init', 'anemonedb_taxonomies_init');
  * @param  array $messages Post updated messages.
  * @return array Messages for the `meshcode2` taxonomy.
  */
-function anemonedb_meshcode2_updated_messages( $messages ) {
+function wp_anemonedb_settings_meshcode2_updated_messages( $messages ) {
 	$messages['meshcode2'] = [
 		0 => '', // Unused. Messages start at index 1.
 		1 => __( 'Meshcode2 added.', 'wp-anemonedb-settings' ),
@@ -982,7 +975,7 @@ function anemonedb_meshcode2_updated_messages( $messages ) {
 	];
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'anemonedb_meshcode2_updated_messages' );
+add_filter( 'term_updated_messages', 'wp_anemonedb_settings_meshcode2_updated_messages' );
 
 /**
  * Sets the post updated messages for the `project` taxonomy.
@@ -990,7 +983,7 @@ add_filter( 'term_updated_messages', 'anemonedb_meshcode2_updated_messages' );
  * @param  array $messages Post updated messages.
  * @return array Messages for the `project` taxonomy.
  */
-function anemonedb_project_updated_messages( $messages ) {
+function wp_anemonedb_settings_project_updated_messages( $messages ) {
 	$messages['project'] = [
 		0 => '', // Unused. Messages start at index 1.
 		1 => __( 'Project added.', 'wp-anemonedb-settings' ),
@@ -1002,7 +995,7 @@ function anemonedb_project_updated_messages( $messages ) {
 	];
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'anemonedb_project_updated_messages' );
+add_filter( 'term_updated_messages', 'wp_anemonedb_settings_project_updated_messages' );
 
 /**
  * Sets the post updated messages for the `taxon` taxonomy.
@@ -1010,7 +1003,7 @@ add_filter( 'term_updated_messages', 'anemonedb_project_updated_messages' );
  * @param  array $messages Post updated messages.
  * @return array Messages for the `taxon` taxonomy.
  */
-function anemonedb_taxon_updated_messages( $messages ) {
+function wp_anemonedb_settings_taxon_updated_messages( $messages ) {
 	$messages['taxon'] = [
 		0 => '', // Unused. Messages start at index 1.
 		1 => __( 'Taxon added.', 'wp-anemonedb-settings' ),
@@ -1022,7 +1015,7 @@ function anemonedb_taxon_updated_messages( $messages ) {
 	];
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'anemonedb_taxon_updated_messages' );
+add_filter( 'term_updated_messages', 'wp_anemonedb_settings_taxon_updated_messages' );
 
 /**
  * Sets the post updated messages for the `yearmonth` taxonomy.
@@ -1030,7 +1023,7 @@ add_filter( 'term_updated_messages', 'anemonedb_taxon_updated_messages' );
  * @param  array $messages Post updated messages.
  * @return array Messages for the `yearmonth` taxonomy.
  */
-function anemonedb_yearmonth_updated_messages( $messages ) {
+function wp_anemonedb_settings_yearmonth_updated_messages( $messages ) {
 	$messages['yearmonth'] = [
 		0 => '', // Unused. Messages start at index 1.
 		1 => __( 'YearMonth added.', 'wp-anemonedb-settings' ),
@@ -1042,10 +1035,10 @@ function anemonedb_yearmonth_updated_messages( $messages ) {
 	];
 	return $messages;
 }
-add_filter( 'term_updated_messages', 'anemonedb_yearmonth_updated_messages' );
+add_filter( 'term_updated_messages', 'wp_anemonedb_settings_yearmonth_updated_messages' );
 
 // Modify post type link to include taxonomy term
-function anemonedb_permalink_structure($post_link, $post) {
+function wp_anemonedb_settings_permalink_structure($post_link, $post) {
 	if ($post->post_type === 'sample') {
 		$terms = get_the_terms($post->ID, 'project');
 		if ($terms && !is_wp_error($terms)) {
@@ -1070,10 +1063,10 @@ function anemonedb_permalink_structure($post_link, $post) {
 	}
 	return $post_link;
 }
-add_filter('post_type_link', 'anemonedb_permalink_structure', 10, 2);
+add_filter('post_type_link', 'wp_anemonedb_settings_permalink_structure', 10, 2);
 
 // Define custom post type rewrite rules
-function anemonedb_custom_post_type_rewrite_rules() {
+function wp_anemonedb_settings_custom_post_type_rewrite_rules() {
 	add_rewrite_rule(
 		'sample/(.+)/([^/]+)/?$',
 		'index.php?post_type=sample&name=$matches[2]',
@@ -1085,4 +1078,80 @@ function anemonedb_custom_post_type_rewrite_rules() {
 		'top'
 	);
 }
-add_action('init', 'anemonedb_custom_post_type_rewrite_rules');
+add_action('init', 'wp_anemonedb_settings_custom_post_type_rewrite_rules');
+
+// Page for deactivation
+function wp_anemonedb_settings_deactivate_page() {
+    if (!current_user_can('manage_options')) {
+        return;
+    }
+	if (isset($_POST['wp_anemonedb_settings_deactivate_confirm']) && check_admin_referer('wp_anemonedb_settings_deactivate_confirm', 'wp_anemonedb_settings_deactivate_confirm_nonce')) {
+		if ($_POST['wp_anemonedb_settings_deactivate_confirm'] === 'remove') {
+			update_option('wp_anemonedb_settings_uninstall_settings', 'remove');
+		}
+		else {
+			update_option('wp_anemonedb_settings_uninstall_settings', 'keep');
+		}
+		wp_clear_scheduled_hook('wp_anemonedb_settings_dd_pass_cleanup');
+		deactivate_plugins(plugin_basename(__FILE__));
+		wp_safe_redirect(admin_url('plugins.php?deactivated=true'));
+		exit;
+	}
+	?>
+	<div class="wrap">
+		<h2>Deactivate ANEMONE DB Settings Plugin</h2>
+		<form method="post">
+			<?php wp_nonce_field('wp_anemonedb_settings_deactivate_confirm', 'wp_anemonedb_settings_deactivate_confirm_nonce'); ?>
+			<p>Do you want to remove all settings of this plugin when uninstalling?</p>
+			<p>
+				<label>
+					<input type="radio" name="wp_anemonedb_settings_deactivate_confirm" value="keep" checked />
+					Leave settings (default)
+				</label>
+			</p>
+			<p>
+				<label>
+					<input type="radio" name="wp_anemonedb_settings_deactivate_confirm" value="remove" />
+					Remove all settings
+				</label>
+			</p>
+			<p>
+				<input type="submit" class="button button-primary" value="Deactivate" />
+			</p>
+		</form>
+	</div>
+	<?php
+	exit;
+}
+
+// Intercept deactivation request and redirect to confirmation screen
+function wp_anemonedb_settings_deactivate_hook() {
+    if (isset($_GET['action']) && $_GET['action'] === 'deactivate' && isset($_GET['plugin']) && $_GET['plugin'] === plugin_basename(__FILE__)) {
+        wp_safe_redirect(admin_url('admin.php?page=wp-anemonedb-settings-deactivate'));
+        exit;
+    }
+}
+add_action('admin_init', 'wp_anemonedb_settings_deactivate_hook');
+
+// Add deactivation confirmation page to the admin menu
+function wp_anemonedb_settings_add_deactivate_page() {
+    add_submenu_page(
+        null, // No parent menu, hidden page
+        'Deactivate ANEMONE DB Settings Plugin',
+        'Deactivate ANEMONE DB Settings Plugin',
+        'manage_options',
+        'wp-anemonedb-settings-deactivate',
+        'wp_anemonedb_settings_deactivate_page'
+    );
+}
+add_action('admin_menu', 'wp_anemonedb_settings_add_deactivate_page');
+
+// Remove all settings when uninstalling if specified
+function wp_anemonedb_settings_uninstall() {
+	if (get_option('wp_anemonedb_settings_uninstall_settings') === 'remove') {
+		wp_anemonedb_settings_delete_dd_users_table();
+		delete_option('wp_anemonedb_settings_uninstall_settings');
+	}
+	flush_rewrite_rules();
+}
+register_uninstall_hook(__FILE__, 'wp_anemonedb_settings_uninstall');
