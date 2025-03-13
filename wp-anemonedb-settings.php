@@ -1102,7 +1102,7 @@ function wp_anemonedb_settings_deactivate_page() {
 		<h2>Deactivate ANEMONE DB Settings Plugin</h2>
 		<form method="post">
 			<?php wp_nonce_field('wp_anemonedb_settings_deactivate_confirm', 'wp_anemonedb_settings_deactivate_confirm_nonce'); ?>
-			<p>Do you want to remove all settings of this plugin when uninstalling?</p>
+			<p>Do you want to remove all settings of this plugin including database table for data download password when uninstalling?</p>
 			<p>
 				<label>
 					<input type="radio" name="wp_anemonedb_settings_deactivate_confirm" value="keep" checked />
