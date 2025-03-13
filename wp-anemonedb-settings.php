@@ -243,13 +243,10 @@ function wp_anemonedb_settings_set_default_role($user_id) {
 add_action('bp_core_activated_user', 'wp_anemonedb_settings_set_default_role');
 
 // Disable BuddyPress welcome e-mail
-function wp_anemonedb_settings_disable_buddypress_welcome_email($email, $email_type, $to, $args) {
-	if ($email_type === 'bp_core_activate_account') {
-		return false;
-	}
-	return $email;
+function wp_anemonedb_settings_disable_buddypress_welcome_email() {
+	remove_action('bp_core_activated_user', 'bp_send_welcome_email', 10);
 }
-add_filter('bp_send_email', 'wp_anemonedb_settings_disable_buddypress_welcome_email', 10, 4);
+add_action('bp_loaded', 'wp_anemonedb_settings_disable_buddypress_welcome_email');
 
 // Disable send private message button
 function wp_anemonedb_settings_remove_send_message_button() {
