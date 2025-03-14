@@ -242,12 +242,6 @@ function wp_anemonedb_settings_set_default_role($user_id) {
 }
 add_action('bp_core_activated_user', 'wp_anemonedb_settings_set_default_role');
 
-// Disable BuddyPress welcome e-mail
-function wp_anemonedb_settings_disable_buddypress_welcome_email() {
-	remove_action('bp_core_activated_user', 'bp_send_welcome_email', 10);
-}
-add_action('bp_loaded', 'wp_anemonedb_settings_disable_buddypress_welcome_email');
-
 // Disable send private message button
 function wp_anemonedb_settings_remove_send_message_button() {
 	return false;
@@ -270,15 +264,6 @@ function wp_anemonedb_settings_restrict_dashboard_access() {
 	}
 }
 add_action('admin_init', 'wp_anemonedb_settings_restrict_dashboard_access');
-
-// Disable "Login Details" email
-function wp_anemonedb_settings_disable_login_details_email($wp_new_user_notification_email, $user, $blogname) {
-	if (!is_admin()) {
-		$wp_new_user_notification_email['to'] = '';
-	}
-	return $wp_new_user_notification_email;
-}
-add_filter('wp_new_user_notification_email', 'wp_anemonedb_settings_disable_login_details_email', 10, 3);
 
 // Disable login language menu
 function wp_anemonedb_settings_remove_login_language_menu() {
