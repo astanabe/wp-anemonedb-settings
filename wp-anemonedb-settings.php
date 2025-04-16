@@ -454,7 +454,8 @@ function wp_anemonedb_settings_save_dd_pass() {
 	$table_name = $wpdb->prefix . 'anemonedb_dd_users';
 	if (isset($_POST['generate_dd_pass'])) {
 		$password = wp_generate_password(12, false, false);
-		$hashed_password = wp_hash_password($password);
+		$salt = '$5$' . base64_encode(random_bytes(12));
+		$hashed_password = crypt($password, $salt);
 		$expiry_time = time() + (10 * 86400);
 		$wpdb->replace(
 			$table_name,
