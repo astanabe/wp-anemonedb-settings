@@ -323,7 +323,7 @@ function wp_anemonedb_settings_enforce_two_factor($enabled, $user_id) {
 	if (count($enabled)) {
 		return $enabled;
 	}
-	return [ 'Two_Factor_Email' ];
+	return ['Two_Factor_Email'];
 }
 add_filter('two_factor_enabled_providers_for_user', 'wp_anemonedb_settings_enforce_two_factor', 10, 2);
 
@@ -391,6 +391,15 @@ function wp_anemonedb_settings_add_data_download() {
 	]);
 }
 add_action('bp_setup_nav', 'wp_anemonedb_settings_add_data_download', 10);
+
+// Add shortcode for inserting data_download_url
+function wp_anemonedb_settings_data_download_url($atts) {
+	if (!is_user_logged_in() || !function_exists('bp_members_get_user_url') || !function_exists('bp_members_get_path_chunks')) {
+		return '';
+	}
+	return esc_url(bp_members_get_user_url(get_current_user_id(), bp_members_get_path_chunks(['settings', 'data-download'])));
+}
+add_shortcode('data-download-url', 'wp_anemonedb_settings_data_download_url');
 
 // Add Data Download submenu to adminbar "Settings" menu
 function wp_anemonedb_settings_add_submenu_to_adminbar_settings() {
