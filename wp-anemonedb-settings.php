@@ -23,6 +23,7 @@ if (!defined('ABSPATH')) {
 
 // Activation hook
 function wp_anemonedb_settings_activate() {
+	wp_anemonedb_settings_set_additional_css();
 	wp_anemonedb_settings_check_login_failure_log();
 	wp_anemonedb_settings_change_frontpage_to_home();
 	wp_anemonedb_settings_set_options();
@@ -130,6 +131,28 @@ function wp_anemonedb_settings_set_options() {
 			delete_post_meta($menu_item->ID, '_wp_simple_menuitems_control_roles');
 			delete_post_meta($menu_item->ID, '_wp_simple_menuitems_control_groups');
 		}
+	}
+}
+
+// Function to set additional CSS
+function wp_anemonedb_settings_set_additional_css() {
+	if (function_exists('wp_update_custom_css_post')) {
+		$css = "body #site-copyright {
+	font-style: normal;
+}
+.wp-caption-text {
+	font-style: normal !important;
+}
+.byline {
+	display: none !important;
+}
+.hscrolltable {
+	overflow-x: auto !important;
+}
+.hscrolltable table {
+	width: max-content;
+}";
+		wp_update_custom_css_post($css);
 	}
 }
 
