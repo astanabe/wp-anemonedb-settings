@@ -146,6 +146,16 @@ function wp_anemonedb_settings_set_additional_css() {
 .byline {
 	display: none !important;
 }
+div.entry-title {
+	width: fit-content;
+	height: fit-content;
+}
+.entry-header {
+	overflow-x: auto !important;
+}
+h2.entry-title {
+	width: max-content;
+}
 .hscrolltable {
 	overflow-x: auto !important;
 }
@@ -378,6 +388,17 @@ function wp_anemonedb_settings_remove_submenu_from_adminbar_settings() {
 	}
 }
 add_action('admin_bar_menu', 'wp_anemonedb_settings_remove_submenu_from_adminbar_settings', 999);
+
+// Function to modify samplename
+function wp_anemonedb_settings_modify_samplename($title, $post_id) {
+	if (is_admin() || !in_the_loop()) {
+		return $title;
+	}
+	$title = str_replace('__', '<br>__', $title);
+	$title = preg_replace('/(__\d{8}T\d{4})/', '$1<br>&nbsp;&nbsp;', $title);
+	return $title;
+}
+add_filter('the_title', 'wp_anemonedb_settings_modify_samplename', 20, 2);
 
 // Create table
 function wp_anemonedb_settings_create_dd_users_table() {
